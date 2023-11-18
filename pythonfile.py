@@ -51,7 +51,7 @@ def main():
                 value = Font.render(str(grid[i][j]), True, grid_original_colour)
 
                 # add to screen with blit
-                win.blit(value, ((j + 1) * 50 + 15, (i + 1) * 50 + 15))
+                win.blit(value, ((j + 1) * 50 + 15, (i + 0.75) * 50 + 15))
                 pygame.display.update()
 
     # kill program condition
