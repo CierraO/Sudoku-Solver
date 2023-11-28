@@ -1,19 +1,16 @@
 import pygame
 import numpy
-#import requests
 
-# set window pane properties
-WIDTH = 550
+from uiElements import Button, OptionBox
+
+pygame.font.init()
+
+# import requests
+
+# starting parameters
+WIDTH = 800
 background_color = (251, 247, 245)
-
 grid_original_colour = (52, 31, 151)
-
-'''
-get fucked, trying to get an api to write out starting stuff. couldn't get one working :(
-# sudoku game api variables
-response = requests.get("https://sugoku.herokuapp.com/board?difficulty=easy")
-grid = response.json()['board']
-'''
 
 grid = numpy.array([
     [2, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -32,13 +29,30 @@ print(grid_original)
 
 # ^^has to be made this way as direct assigning variables
 # are just references to original, ie, completely connected to changes
+clock = pygame.time.Clock()
+win = pygame.display.set_mode((WIDTH, WIDTH))
+win.fill(background_color)
+
+# load all button images
+gen_button_img = pygame.image.load('button_generate.png').convert_alpha()
+sol_Button_img = pygame.image.load('button_solve-3.png').convert_alpha()
+stp_Button_img = pygame.image.load('button_step-3.png').convert_alpha()
+
+# create button instances
+gen_button = Button(100, 550, gen_button_img, 1)
+sol_button = Button(100, 605, sol_Button_img, 1)
+stp_button = Button(225, 605, stp_Button_img, 1)
+# create option box instances
+list1 = OptionBox(550, 300, 160, 40, (150, 150, 150), (100, 200, 255), pygame.font.SysFont('Comic Sans MS', 30),
+                  ["5x5", "9x9", "12x12"])
+list2 = OptionBox(550, 350, 160, 40, (150, 150, 150), (100, 200, 255), pygame.font.SysFont('Comic Sans MS', 25),
+                  ["Dijkstra", "Last Box", "A Star"])
 
 
 def main():
+
     pygame.init()
-    win = pygame.display.set_mode((WIDTH, WIDTH))
     pygame.display.set_caption("Sudoku")
-    win.fill(background_color)
     Font = pygame.font.SysFont('Comic Sans MS', 35)
 
     # sets up the board
@@ -54,12 +68,46 @@ def main():
                 win.blit(value, ((j + 1) * 50 + 15, (i + 1) * 50 + 15))
                 pygame.display.update()
 
-    # kill program condition
-    while True:
-        for event in pygame.event.get():
+    run = True
+    while run:
+        clock.tick(60)
+        event_list = pygame.event.get()
+
+        for event in event_list:
             if event.type == pygame.QUIT:
-                pygame.quit()
-                return
+                run = False
+
+        # checks if boxes are highlighted
+        selected_option_grid = list1.update(event_list)
+        selected_option_algo = list2.update(event_list)
+
+        if selected_option_grid >= 0:
+            print("Grid Option: ", selected_option_grid)
+
+        if selected_option_algo >= 0:
+            print("Algo Option: ", selected_option_algo)
+
+        # win.fill((255, 255, 255))
+
+        # draw buttons and functionality
+        if gen_button.draw(win):
+            print("Generating Puzzle...")
+        if sol_button.draw(win):
+            print('Solving Puzzle...')
+        if stp_button.draw(win):
+            print("Next Step is...")
+
+        # draws rectangles to hide the option box options
+        pygame.draw.rect(win, (251, 247, 245), pygame.Rect(550, 340, 160, 120))
+        pygame.draw.rect(win, (251, 247, 245), pygame.Rect(550, 390, 160, 120))
+        # draws options boxes
+        list2.draw(win)
+        list1.draw(win)
+
+        pygame.display.flip()
+
+    pygame.quit()
+    exit()
 
 
 # helper function
@@ -70,18 +118,18 @@ def starter():
 
 # helper function
 # draws the basic game board
-def board(win):
+def board(window):
     # bolded sectors
     for i in range(4):
         # vertical bold lines
-        pygame.draw.line(win,
+        pygame.draw.line(window,
                          (0, 0, 0),
                          (50 + 50 * i * 3, 50),
                          (50 + 50 * i * 3, 500),
                          4)
 
         # bold horizontal lines
-        pygame.draw.line(win,
+        pygame.draw.line(window,
                          (0, 0, 0),
                          (50, 50 + 50 * i * 3),
                          (500, 50 + 50 * i * 3),
@@ -91,14 +139,14 @@ def board(win):
         print(i)
 
         # vertical lines
-        pygame.draw.line(win,
+        pygame.draw.line(window,
                          (0, 0, 0),
                          (50 + 50 * i, 50),
                          (50 + 50 * i, 500),
                          1)
 
         # horizontal lines
-        pygame.draw.line(win,
+        pygame.draw.line(window,
                          (0, 0, 0),
                          (50, 50 + 50 * i),
                          (500, 50 + 50 * i),
