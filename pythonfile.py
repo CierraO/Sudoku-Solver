@@ -9,7 +9,7 @@ background_color = (251, 247, 245)
 grid_original_colour = (52, 31, 151)
 
 '''
-get fucked, trying to get an api to write out starting stuff. couldn't get one working :(
+trying to get an api to write out starting stuff. couldn't get one working :(
 # sudoku game api variables
 response = requests.get("https://sugoku.herokuapp.com/board?difficulty=easy")
 grid = response.json()['board']
