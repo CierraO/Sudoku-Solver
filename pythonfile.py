@@ -34,9 +34,9 @@ win = pygame.display.set_mode((WIDTH, WIDTH))
 win.fill(background_color)
 
 # load all button images
-gen_button_img = pygame.image.load('button_generate.png').convert_alpha()
-sol_Button_img = pygame.image.load('button_solve-3.png').convert_alpha()
-stp_Button_img = pygame.image.load('button_step-3.png').convert_alpha()
+gen_button_img = pygame.image.load('Resources/button_generate.png').convert_alpha()
+sol_Button_img = pygame.image.load('Resources/button_solve-3.png').convert_alpha()
+stp_Button_img = pygame.image.load('Resources/button_step-3.png').convert_alpha()
 
 # create button instances
 gen_button = Button(100, 550, gen_button_img, 1)
