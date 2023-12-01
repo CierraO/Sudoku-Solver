@@ -72,22 +72,26 @@ class SudokuProblem(Problem):
     def actions(self, board):
         """The actions at a board configuration are the valid numbers
         that can be placed in the next empty square."""
-        square = self.puzzle.find_blank_square()
+        square = self.puzzle.find_blank_square(board)
         if not square:
             return []
 
-        return self.puzzle.get_valid_numbers(square)
+        return self.puzzle.get_valid_numbers(square, board)
 
     def result(self, board, number):
         """The result of entering a number is the board with that number
         in the first empty spot."""
-        square = self.puzzle.find_blank_square
-        board[square[0]][square[1]] = number
-        return board
+        square = self.puzzle.find_blank_square(board)
+        new_board = [[board[x][y] for y in range(len(board[0]))] for x in range(len(board))]
+        new_board[square[0]][square[1]] = number
+        return new_board
 
     def goal_test(self, board):
         """The goal is to have a board with no empty spots."""
-        return self.puzzle.is_complete()
+        return self.puzzle.is_complete(board)
+
+    def h(self, node):
+        return 1
 
 
 # ______________________________________________________________________________
@@ -215,15 +219,40 @@ class SudokuAgent(SimpleProblemSolvingAgent):
         return problem
 
     def search(self):
-        print("Greedy Best-First Search")
-        goal_node = best_first_graph_search(self.problem, lambda node: self.problem.h(node))
+        # print("Greedy Best-First Search")
+        # goal_node = best_first_graph_search(self.problem, lambda node: self.problem.h(node))
+        goal_node = depth_first_tree_search(self.problem)
         if goal_node:
-            print(goal_node.path())
+            # print(goal_node.path())
+            print("STATE:")
+            print(goal_node.state)
             print("Total cost: {}".format(goal_node.path_cost))
+
+        return goal_node
 
 
 # ______________________________________________________________________________
 # Search Algorithms
+
+def depth_first_tree_search(problem):
+    """
+    [Figure 3.7]
+    Search the deepest nodes in the search tree first.
+    Search through the successors of a problem to find a goal.
+    The argument frontier should be an empty queue.
+    Repeats infinitely in case of loops.
+    """
+
+    frontier = [Node(problem.initial)]  # Stack
+
+    while frontier:
+        print(frontier)
+        node = frontier.pop()
+        if problem.goal_test(node.state):
+            return node
+        frontier.extend(node.expand(problem))
+    return None
+
 
 def best_first_graph_search(problem, f, display=False):
     """Search the nodes with the lowest f scores first.
