@@ -219,14 +219,12 @@ class SudokuAgent(SimpleProblemSolvingAgent):
         return problem
 
     def search(self):
-        # print("Greedy Best-First Search")
         # goal_node = best_first_graph_search(self.problem, lambda node: self.problem.h(node))
         goal_node = depth_first_tree_search(self.problem)
-        if goal_node:
-            # print(goal_node.path())
-            print("STATE:")
-            print(goal_node.state)
-            print("Total cost: {}".format(goal_node.path_cost))
+        # if goal_node:
+        #     print(goal_node.path())
+        #     print(goal_node.state)
+        #     print("Total cost: {}".format(goal_node.path_cost))
 
         return goal_node
 
@@ -246,7 +244,6 @@ def depth_first_tree_search(problem):
     frontier = [Node(problem.initial)]  # Stack
 
     while frontier:
-        print(frontier)
         node = frontier.pop()
         if problem.goal_test(node.state):
             return node
