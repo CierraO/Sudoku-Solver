@@ -7,7 +7,7 @@ Permission is hereby granted, free of charge, to any person obtaining a copy of 
 The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE."""
-
+from enum import Enum
 
 from utils import *
 
@@ -200,7 +200,7 @@ class SimpleProblemSolvingAgent:
     def formulate_problem(self, state, goal):
         raise NotImplementedError
 
-    def search(self):
+    def search(self, algorithm):
         raise NotImplementedError
 
 
@@ -218,19 +218,31 @@ class SudokuAgent(SimpleProblemSolvingAgent):
         problem = self.problem.initial
         return problem
 
-    def search(self):
-        # goal_node = best_first_graph_search(self.problem, lambda node: self.problem.h(node))
-        goal_node = depth_first_tree_search(self.problem)
-        # if goal_node:
-        #     print(goal_node.path())
-        #     print(goal_node.state)
-        #     print("Total cost: {}".format(goal_node.path_cost))
+    def search(self, algorithm):
+        match algorithm:
+            case Algorithms.DEPTH_FIRST:
+                goal_node = depth_first_tree_search(self.problem)
+            case Algorithms.DIJKSTRA:
+                raise NotImplementedError
+            case Algorithms.LAST_BOX:
+                raise NotImplementedError
+            case Algorithms.A_STAR:
+                raise NotImplementedError
+            case _:
+                goal_node = depth_first_tree_search(self.problem)
 
         return goal_node
 
 
 # ______________________________________________________________________________
 # Search Algorithms
+
+class Algorithms(Enum):
+    DEPTH_FIRST = 0
+    DIJKSTRA = 1
+    LAST_BOX = 2
+    A_STAR = 3
+
 
 def depth_first_tree_search(problem):
     """
@@ -249,7 +261,7 @@ def depth_first_tree_search(problem):
             return node
         frontier.extend(node.expand(problem))
     return None
-
+    
 
 def best_first_graph_search(problem, f, display=False):
     """Search the nodes with the lowest f scores first.

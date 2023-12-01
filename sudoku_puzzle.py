@@ -7,18 +7,31 @@ class SudokuPuzzle:
 
     def __init__(self, board):
         self.board = board
+        self.solution_node = None
         self.length = numpy.size(board, 0)
-        self.problem = SudokuProblem(self)
-        self.agent = SudokuAgent(self.problem)
+        self.step = 1
 
     def get_solution(self, algorithm=None):
         """Gets a valid board with all positions filled in, plus the end node, using the specified algorithm.
         The end node allows for tracing the steps of the solution."""
-        return self.agent.search()
+        self.step = 1  # reset the step-through
+        problem = SudokuProblem(self)
+        agent = SudokuAgent(problem)
+        self.solution_node = agent.search(algorithm)
+        return self.solution_node.state, self.solution_node
 
-    def step_through(self, algorithm):
-        """Displays the next step of the solution. Calls get_solution and uses the end node."""
-        pass
+    def step_through(self, algorithm=None):
+        """Returns the next step of the solution in the form of a board."""
+        if not self.solution_node:
+            self.get_solution()
+        path = self.solution_node.path()
+
+        if self.step < len(path):
+            next_step = path[self.step]
+            self.step += 1
+            return next_step.state
+
+        return False
 
     def find_blank_square(self, bd=None):
         """Returns the position of the first blank square in the board as a tuple.
