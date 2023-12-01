@@ -1,30 +1,35 @@
+import numpy
+
+from problem_solving_agent import SudokuProblem, SudokuAgent
+
+
 class SudokuPuzzle:
 
     def __init__(self, board):
         self.board = board
-        self.length = board.size
+        self.length = numpy.size(board, 0)
+        self.problem = SudokuProblem(self)
+        self.agent = SudokuAgent(self.problem)
 
-    def get_solution(self, algorithm):
+    def get_solution(self, algorithm=None):
         """Gets a valid board with all positions filled in, plus the end node, using the specified algorithm.
         The end node allows for tracing the steps of the solution."""
-        pass
+        self.agent.search()
 
     def step_through(self, algorithm):
         """Displays the next step of the solution. Calls get_solution and uses the end node."""
         pass
 
     def find_blank_square(self):
-        """Returns the position of the first blank square in the board.
+        """Returns the position of the first blank square in the board as a tuple.
         If no squares are blank, returns false."""
-        square = False
 
         for row in range(self.length):
             for col in range(self.length):
                 if self.board[row][col] == 0:
-                    square = (row, col)
-                    break
+                    return row, col
 
-        return square
+        return False
 
     def get_valid_numbers(self, square):
         """Gets the valid numbers that can be placed in this square.
