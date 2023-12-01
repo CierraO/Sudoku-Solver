@@ -1,6 +1,5 @@
 import pygame
 import numpy
-
 from ui_elements import Button, OptionBox
 
 pygame.font.init()
@@ -33,15 +32,17 @@ clock = pygame.time.Clock()
 win = pygame.display.set_mode((WIDTH, WIDTH))
 win.fill(background_color)
 
+
 # load all button images
-gen_button_img = pygame.image.load('resources/button_generate.png').convert_alpha()
-sol_Button_img = pygame.image.load('resources/button_solve-3.png').convert_alpha()
-stp_Button_img = pygame.image.load('resources/button_step-3.png').convert_alpha()
+gen_button_img = pygame.image.load('resources/button_generate_updated.png').convert_alpha()
+sol_Button_img = pygame.image.load('resources/button_solve_updated.png').convert_alpha()
+stp_Button_img = pygame.image.load('resources/button_step.png').convert_alpha()
 
 # create button instances
-gen_button = Button(100, 550, gen_button_img, 1)
-sol_button = Button(100, 605, sol_Button_img, 1)
-stp_button = Button(225, 605, stp_Button_img, 1)
+gen_button = Button(75, 525, gen_button_img, 1)
+sol_button = Button(75, 580, sol_Button_img, 1)
+stp_button = Button(330, 580, stp_Button_img, 1)
+
 # create option box instances
 list1 = OptionBox(550, 300, 160, 40, (150, 150, 150), (100, 200, 255), pygame.font.SysFont('Comic Sans MS', 30),
                   ["5x5", "9x9", "12x12"])
@@ -50,7 +51,6 @@ list2 = OptionBox(550, 350, 160, 40, (150, 150, 150), (100, 200, 255), pygame.fo
 
 
 def main():
-
     pygame.init()
     pygame.display.set_caption("Sudoku")
     Font = pygame.font.SysFont('Comic Sans MS', 35)
