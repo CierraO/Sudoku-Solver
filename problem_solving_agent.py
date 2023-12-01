@@ -62,43 +62,32 @@ class Problem:
         raise NotImplementedError
 
 
-class GraphProblem(Problem):
-    """The problem of searching a graph from one node to another."""
+class SudokuProblem(Problem):
+    """The problem of searching for a valid sudoku board."""
 
-    def __init__(self, initial, goal, graph):
-        super().__init__(initial, goal)
-        self.graph = graph
+    def __init__(self, puzzle):
+        super().__init__(puzzle.board)
+        self.puzzle = puzzle
 
-    def actions(self, A):
-        """The actions at a graph node are just its neighbors."""
-        return list(self.graph.get(A).keys())
+    def actions(self, board):
+        """The actions at a board configuration are the valid numbers
+        that can be placed in the next empty square."""
+        square = self.puzzle.find_blank_square()
+        if not square:
+            return []
 
-    def result(self, state, action):
-        """The result of going to a neighbor is just that neighbor."""
-        return action
+        return self.puzzle.get_valid_numbers(square)
 
-    def path_cost(self, cost_so_far, A, action, B):
-        return cost_so_far + (self.graph.get(A, B) or np.inf)
+    def result(self, board, number):
+        """The result of entering a number is the board with that number
+        in the first empty spot."""
+        square = self.puzzle.find_blank_square
+        board[square[0]][square[1]] = number
+        return board
 
-    def find_min_edge(self):
-        """Find minimum value of edges."""
-        m = np.inf
-        for d in self.graph.graph_dict.values():
-            local_min = min(d.values())
-            m = min(m, local_min)
-
-        return m
-
-    def h(self, node):
-        """h function is straight-line distance from a node's state to goal."""
-        locs = getattr(self.graph, 'locations', None)
-        if locs:
-            if type(node) is str:
-                return int(distance(locs[node], locs[self.goal]))
-
-            return int(distance(locs[node.state], locs[self.goal]))
-        else:
-            return np.inf
+    def goal_test(self, board):
+        """The goal is to have a board with no empty spots."""
+        return self.puzzle.is_complete()
 
 
 # ______________________________________________________________________________
@@ -172,7 +161,7 @@ class Node:
 # ______________________________________________________________________________
 
 
-class SimpleProblemSolvingAgentProgram:
+class SimpleProblemSolvingAgent:
     """
     [Figure 3.1]
     Abstract framework for a problem-solving agent.
@@ -209,6 +198,28 @@ class SimpleProblemSolvingAgentProgram:
 
     def search(self):
         raise NotImplementedError
+
+
+class SudokuAgent(SimpleProblemSolvingAgent):
+    """A problem-solving agent to find solutions to sudoku puzzles.
+        It is assumed that the given problem is a SudokuProblem."""
+    def update_state(self, state, percept):
+        return percept
+
+    def formulate_goal(self, state):
+        goal = self.problem.goal
+        return goal
+
+    def formulate_problem(self, state, goal):
+        problem = self.problem.initial
+        return problem
+
+    def search(self):
+        print("Greedy Best-First Search")
+        goal_node = best_first_graph_search(self.problem, lambda node: self.problem.h(node))
+        if goal_node:
+            print(goal_node.path())
+            print("Total cost: {}".format(goal_node.path_cost))
 
 
 # ______________________________________________________________________________
