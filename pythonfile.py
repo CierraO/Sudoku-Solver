@@ -1,7 +1,18 @@
 import pygame
 import numpy
+import requests
 
 from ui_elements import Button, OptionBox
+
+
+# sudoku game api variables
+response = requests.get("https://sudoku-api.vercel.app/api/dosuku")
+response = response.json()['newboard']
+response = response['grids']
+response = response[0]
+grid = response['value']
+
+print(grid)
 
 pygame.font.init()
 
@@ -11,7 +22,7 @@ pygame.font.init()
 WIDTH = 800
 background_color = (251, 247, 245)
 grid_original_colour = (52, 31, 151)
-
+'''
 grid = numpy.array([
     [2, 0, 0, 0, 0, 0, 0, 0, 0],
     [1, 0, 0, 2, 0, 6, 7, 0, 0],
@@ -22,7 +33,7 @@ grid = numpy.array([
     [0, 2, 1, 6, 0, 4, 9, 0, 0],
     [0, 0, 0, 5, 9, 0, 3, 0, 1],
     [0, 0, 0, 8, 1, 0, 5, 4, 0]])
-
+'''
 grid_original = [[grid[x][y] for y in range(len(grid[0]))] for x in range(len(grid))]
 print(grid)
 print(grid_original)
