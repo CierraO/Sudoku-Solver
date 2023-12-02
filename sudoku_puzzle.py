@@ -13,12 +13,15 @@ class SudokuPuzzle:
 
     def get_solution(self, algorithm=None):
         """Gets a valid board with all positions filled in, plus the end node, using the specified algorithm.
-        The end node allows for tracing the steps of the solution."""
+        The end node allows for tracing the steps of the solution. If there is no solution, return False."""
         self.step = 1  # reset the step-through
         problem = SudokuProblem(self)
         agent = SudokuAgent(problem)
         self.solution_node = agent.search(algorithm)
-        return self.solution_node.state, self.solution_node
+        if self.solution_node:
+            return self.solution_node.state, self.solution_node
+        else:
+            return False
 
     def step_through(self, algorithm=None):
         """Returns the next step of the solution in the form of a board,
