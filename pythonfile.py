@@ -3,24 +3,23 @@ import random
 import pygame
 import numpy
 
+from sudoku_puzzle import SudokuPuzzle
 from ui_elements import Button, OptionBox, TextComment
 
 
 pygame.font.init()
 
-# import requests
-
 # starting parameters
+starting_grid = []
+
 WIDTH = 1000
 background_color = (251, 247, 245)
 grid_original_color = (52, 31, 151)
+font = pygame.font.SysFont('Comic Sans MS', 35)
 
-# ^^has to be made this way as direct assigning variables
-# are just references to original, ie, completely connected to changes
 clock = pygame.time.Clock()
 win = pygame.display.set_mode((WIDTH, WIDTH))
 win.fill(background_color)
-
 
 # load all button images
 gen_button_img = pygame.image.load('resources/button_generate_updated.png').convert_alpha()
@@ -37,7 +36,7 @@ stp_button = Button(355, 825, stp_Button_img, 1)
 list1 = OptionBox(700, 400, 160, 40, (150, 150, 150), (100, 200, 255), pygame.font.SysFont('Comic Sans MS', 30),
                   ["9x9", "6x6", "12x12"])
 list2 = OptionBox(700, 450, 160, 40, (150, 150, 150), (100, 200, 255), pygame.font.SysFont('Comic Sans MS', 25),
-                  ["Dijkstra", "Last Box", "A Star"])
+                  ["DFS", "Last Box", "A Star"])
 # create comment instances
 title = TextComment(50, 40, "Comic Sans MS", (0, 0, 0), 40)
 names1 = TextComment(55, 90, "Comic Sans MS", (0, 0, 0), 20)
@@ -45,10 +44,11 @@ names2 = TextComment(55, 115, "Comic Sans MS", (0, 0, 0), 20)
 
 
 def main():
+    global starting_grid
+
     #   current_grid = 9
     pygame.init()
     pygame.display.set_caption("Sudoku")
-    font = pygame.font.SysFont('Comic Sans MS', 35)
 
     #    field1 = TextField(51, 150, 50, pygame.font.SysFont("Comic Sans MS", 30))
     #    field1group = pygame.sprite.Group(field1)
@@ -60,16 +60,13 @@ def main():
     grid_9x9 = numpy.zeros((9, 9), numpy.int8)
     # populate starting grid
     grid_9x9 = populate_grid(grid_9x9)
+    starting_grid = grid_9x9
+    # Ideally, creating a puzzle object will be handled by a puzzle generator class in the future
+    puzzle = SudokuPuzzle(starting_grid)
+
     # sets up the starting board
-    board(win, grid_9x9)
-    # populate starting board with starting numbers
-    for i in range(0, len(grid_9x9[0])):
-        for j in range(0, len(grid_9x9[0])):
-            if 0 < grid_9x9[i][j] < 10:
-                value = font.render(str(grid_9x9[i][j]), True, grid_original_color)
-                # add to screen with blit
-                win.blit(value, ((j + 1) * 50 + 15, (i + 0.75) * 50 + 15 + 100))
-                pygame.display.flip()
+    board(win, starting_grid)
+    populate_board(starting_grid)
 
     # game loop
     run = True
@@ -94,17 +91,12 @@ def main():
                 # current_grid = 6
                 grid_6x6 = numpy.zeros((6, 6), numpy.int8)
                 grid_6x6 = populate_grid(grid_6x6)
+                starting_grid = grid_6x6
+                puzzle = SudokuPuzzle(starting_grid)
                 win.fill((251, 247, 245))
-                board(win, grid_6x6)
+                board(win, starting_grid)
 
-                # populate board with starting numbers
-                for i in range(0, len(grid_6x6[0])):
-                    for j in range(0, len(grid_6x6[0])):
-                        if 0 < grid_6x6[i][j]:
-                            value = font.render(str(grid_6x6[i][j]), True, grid_original_color)
-                            # add to screen with blit
-                            win.blit(value, ((j + 1) * 50 + 15, (i + 0.75) * 50 + 15 + 100))
-                            pygame.display.flip()
+                populate_board(starting_grid)
 
             # board chosen to be 9x9
             elif selected_option_grid == 0:
@@ -112,36 +104,24 @@ def main():
                 # current_grid = 9
                 grid_9x9 = numpy.zeros((9, 9), numpy.int8)
                 grid_9x9 = populate_grid(grid_9x9)
+                starting_grid = grid_9x9
+                puzzle = SudokuPuzzle(starting_grid)
                 win.fill((251, 247, 245))
-                board(win, grid_9x9)
-                # populate board with starting numbers
-                for i in range(0, len(grid_9x9[0])):
-                    for j in range(0, len(grid_9x9[0])):
-                        if 0 < grid_9x9[i][j]:
-                            value = font.render(str(grid_9x9[i][j]), True, grid_original_color)
-                            # add to screen with blit
-                            win.blit(value, ((j + 1) * 50 + 15, (i + 0.75) * 50 + 15 + 100))
-                            pygame.display.flip()
+                board(win, starting_grid)
+
+                populate_board(starting_grid)
+
             # board chosen to be 12x12
             elif selected_option_grid == 2:
                 # initialize + populate grid
                 grid_12x12 = numpy.zeros((12, 12), numpy.int8)
                 grid_12x12 = populate_grid(grid_12x12)
+                starting_grid = grid_12x12
+                puzzle = SudokuPuzzle(starting_grid)
                 win.fill((251, 247, 245))
-                board(win, grid_12x12)
-                # populate board with starting numbers
-                for i in range(0, len(grid_12x12[0])):
-                    for j in range(0, len(grid_12x12[0])):
-                        if 0 < grid_12x12[i][j]:
-                            value = font.render(str(grid_12x12[i][j]), True, grid_original_color)
-                            # add to screen with blit
-                            if grid_12x12[i][j] >= 10:
-                                # 2-digit number, shift left slightly
-                                win.blit(value, ((j + 1) * 50 + 8, (i + 0.75) * 50 + 15 + 100))
-                            else:
-                                # 1-digit number
-                                win.blit(value, ((j + 1) * 50 + 15, (i + 0.75) * 50 + 15 + 100))
-                            pygame.display.flip()
+                board(win, starting_grid)
+                populate_board(starting_grid)
+
         if selected_option_algo >= 0:
             print("Algo Option: ", selected_option_algo)
         # draw buttons and functionality
@@ -149,8 +129,22 @@ def main():
             print("Generating Puzzle...")
         if sol_button.draw(win):
             print('Solving Puzzle...')
+            if puzzle.get_solution():
+                populate_board(puzzle.get_solution()[0])
+            print("Solved! (If possible)")
+
         if stp_button.draw(win):
             print("Next Step is...")
+            if puzzle.step == 1:
+                print("CLEARING")
+                clear_board()
+
+            g, new_num = puzzle.step_through()
+            if g:
+                if new_num:
+                    populate_board(g, new_num)
+                else:
+                    populate_board(g)
 
         # draws comments
         title.draw(win, "The Sudoku Solver")
@@ -331,6 +325,33 @@ def populate_grid(grid):
                    ((numpy.sum(new_grid[9:12, 8:12] == new_grid[i][j])) > 1)):  # bottom right subsection
                     new_grid[i][j] = 0
     return new_grid
+
+
+def get_clue_positions():
+    """Get a list of tuples containing the coords of every clue number."""
+    return [(x, y) for x in range(len(starting_grid[0])) for y in range(len(starting_grid[0])) if starting_grid[x][y] != 0]
+
+
+def populate_board(g, new_num=None):
+    """Populate the sudoku board with numbers from the given grid."""
+    for i in range(0, len(g[0])):
+        for j in range(0, len(g[0])):
+            if 0 < g[i][j] < 10:
+                if (i, j) in get_clue_positions():
+                    value = font.render(str(g[i][j]), True, (0, 0, 0))
+                elif (i, j) == new_num:
+                    value = font.render(str(g[i][j]), True, (255, 0, 0))
+                else:
+                    value = font.render(str(g[i][j]), True, grid_original_color)
+
+                # add to screen with blit
+                win.blit(value, ((j + 1) * 50 + 15, (i + 0.75) * 50 + 15 + 100))
+                pygame.display.flip()
+
+
+def clear_board():
+    win.fill(background_color)
+    board(win, starting_grid)
 
 
 # game entry point
