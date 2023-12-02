@@ -1,6 +1,7 @@
 import pygame
 import numpy
 
+from sudoku_puzzle import SudokuPuzzle
 from ui_elements import Button, OptionBox
 
 pygame.font.init()
@@ -11,6 +12,7 @@ pygame.font.init()
 WIDTH = 800
 background_color = (251, 247, 245)
 grid_original_colour = (52, 31, 151)
+Font = pygame.font.SysFont('Comic Sans MS', 35)
 
 grid = numpy.array([
     [2, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -26,6 +28,8 @@ grid = numpy.array([
 grid_original = [[grid[x][y] for y in range(len(grid[0]))] for x in range(len(grid))]
 print(grid)
 print(grid_original)
+# Ideally, creating a puzzle object will be handled by a puzzle generator class in the future
+puzzle = SudokuPuzzle(grid)
 
 # ^^has to be made this way as direct assigning variables
 # are just references to original, ie, completely connected to changes
@@ -53,20 +57,12 @@ def main():
 
     pygame.init()
     pygame.display.set_caption("Sudoku")
-    Font = pygame.font.SysFont('Comic Sans MS', 35)
 
     # sets up the board
     board(win)
 
     # populate board with starting numbers
-    for i in range(0, len(grid[0])):
-        for j in range(0, len(grid[0])):
-            if 0 < grid[i][j] < 10:
-                value = Font.render(str(grid[i][j]), True, grid_original_colour)
-
-                # add to screen with blit
-                win.blit(value, ((j + 1) * 50 + 15, (i + 0.75) * 50 + 15))
-                pygame.display.update()
+    populate_board(grid)
 
     run = True
     while run:
@@ -94,8 +90,17 @@ def main():
             print("Generating Puzzle...")
         if sol_button.draw(win):
             print('Solving Puzzle...')
+            if puzzle.get_solution()[1]:
+                populate_board(puzzle.get_solution()[0])
+
         if stp_button.draw(win):
             print("Next Step is...")
+            g = puzzle.step_through()
+            if g:
+                if puzzle.step == 1:
+                    print("clear board")
+                    # TODO: clear the board
+                populate_board(g)
 
         # draws rectangles to hide the option box options
         pygame.draw.rect(win, (251, 247, 245), pygame.Rect(550, 340, 160, 120))
@@ -153,6 +158,18 @@ def board(window):
                          1)
 
     return pygame.display.update()
+
+
+def populate_board(g):
+    """Populate the sudoku board with numbers from the given grid."""
+    for i in range(0, len(g[0])):
+        for j in range(0, len(g[0])):
+            if 0 < g[i][j] < 10:
+                value = Font.render(str(g[i][j]), True, grid_original_colour)
+
+                # add to screen with blit
+                win.blit(value, ((j + 1) * 50 + 15, (i + 0.75) * 50 + 15))
+                pygame.display.update()
 
 
 # game entry point
