@@ -26,6 +26,7 @@ grid = numpy.array([
     [0, 0, 0, 8, 1, 0, 5, 4, 0]])
 
 grid_original = [[grid[x][y] for y in range(len(grid[0]))] for x in range(len(grid))]
+clue_positions = [(x, y) for x in range(len(grid[0])) for y in range(len(grid[0])) if grid[x][y] != 0]
 print(grid)
 print(grid_original)
 # Ideally, creating a puzzle object will be handled by a puzzle generator class in the future
@@ -95,12 +96,16 @@ def main():
 
         if stp_button.draw(win):
             print("Next Step is...")
-            g = puzzle.step_through()
+            if puzzle.step == 1:
+                print("CLEARING")
+                clear_board()
+
+            g, new_num = puzzle.step_through()
             if g:
-                if puzzle.step == 1:
-                    print("clear board")
-                    # TODO: clear the board
-                populate_board(g)
+                if new_num:
+                    populate_board(g, new_num)
+                else:
+                    populate_board(g)
 
         # draws rectangles to hide the option box options
         pygame.draw.rect(win, (251, 247, 245), pygame.Rect(550, 340, 160, 120))
@@ -160,16 +165,26 @@ def board(window):
     return pygame.display.update()
 
 
-def populate_board(g):
+def populate_board(g, new_num=None):
     """Populate the sudoku board with numbers from the given grid."""
     for i in range(0, len(g[0])):
         for j in range(0, len(g[0])):
             if 0 < g[i][j] < 10:
-                value = Font.render(str(g[i][j]), True, grid_original_colour)
+                if (i, j) in clue_positions:
+                    value = Font.render(str(g[i][j]), True, (0, 0, 0))
+                elif (i, j) == new_num:
+                    value = Font.render(str(g[i][j]), True, (255, 0, 0))
+                else:
+                    value = Font.render(str(g[i][j]), True, grid_original_colour)
 
                 # add to screen with blit
                 win.blit(value, ((j + 1) * 50 + 15, (i + 0.75) * 50 + 15))
                 pygame.display.update()
+
+
+def clear_board():
+    win.fill(background_color)
+    board(win)
 
 
 # game entry point

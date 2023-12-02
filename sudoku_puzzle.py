@@ -21,7 +21,9 @@ class SudokuPuzzle:
         return self.solution_node.state, self.solution_node
 
     def step_through(self, algorithm=None):
-        """Returns the next step of the solution in the form of a board."""
+        """Returns the next step of the solution in the form of a board,
+        as well as the position of the newly-added number. If there are
+        no remaining steps, returns False."""
         if not self.solution_node:
             self.get_solution()
         path = self.solution_node.path()
@@ -29,13 +31,13 @@ class SudokuPuzzle:
         if self.step < len(path):
             next_step = path[self.step]
             self.step += 1
-            return next_step.state
+            return next_step.state, self.find_blank_square(next_step.parent.state)
 
         return False
 
     def find_blank_square(self, bd=None):
         """Returns the position of the first blank square in the board as a tuple.
-        If no squares are blank, returns false."""
+        If no squares are blank, returns False."""
         if bd is None:
             bd = self.board
 

@@ -77,11 +77,13 @@ class TestSudokuPuzzle(unittest.TestCase):
                              [0, 4, 0, 0, 5, 0, 0, 3, 6],
                              [7, 0, 3, 0, 1, 8, 0, 0, 0]])
 
-        actual_step = self.puzzle1.step_through()
+        actual_step, new_num = self.puzzle1.step_through()
 
         for row in range(9):
             for col in range(9):
                 self.assertEqual(expected_step[row][col], actual_step[row][col])
+
+        self.assertEqual((0, 0), new_num)
 
         # Second step
         expected_step = numpy.array([[4, 3, 0, 2, 6, 0, 7, 0, 1],
@@ -94,11 +96,13 @@ class TestSudokuPuzzle(unittest.TestCase):
                                      [0, 4, 0, 0, 5, 0, 0, 3, 6],
                                      [7, 0, 3, 0, 1, 8, 0, 0, 0]])
 
-        actual_step = self.puzzle1.step_through()
+        actual_step, new_num = self.puzzle1.step_through()
 
         for row in range(9):
             for col in range(9):
                 self.assertEqual(expected_step[row][col], actual_step[row][col])
+
+        self.assertEqual((0, 1), new_num)
 
         # Test if false when no steps left
         for i in range(81):
