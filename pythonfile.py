@@ -153,7 +153,7 @@ def main():
             print("Next Step is...")
 
         # draws comments
-        title.draw(win, "Sue Dooku: The Sudoku Solver")
+        title.draw(win, "The Sudoku Solver")
         names1.draw(win, "Joseph Baliestiero, Cierra O'Grady,")
         names2.draw(win, "Gibson Phillips, and Andrew Simonini")
 
