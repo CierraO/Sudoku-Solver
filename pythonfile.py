@@ -3,7 +3,7 @@ import random
 import pygame
 import numpy
 
-from ui_elements import Button, OptionBox
+from ui_elements import Button, OptionBox, TextComment
 
 pygame.font.init()
 
@@ -34,13 +34,23 @@ list1 = OptionBox(700, 400, 160, 40, (150, 150, 150), (100, 200, 255), pygame.fo
                   ["6x6", "9x9", "12x12"])
 list2 = OptionBox(700, 450, 160, 40, (150, 150, 150), (100, 200, 255), pygame.font.SysFont('Comic Sans MS', 25),
                   ["Dijkstra", "Last Box", "A Star"])
+# create comment instances
+title = TextComment(50, 40, "Comic Sans MS", (0, 0, 0), 40)
+names1 = TextComment(55, 90, "Comic Sans MS", (0, 0, 0), 20)
+names2 = TextComment(55, 115, "Comic Sans MS", (0, 0, 0), 20)
 
 
 def main():
-
+    #   current_grid = 9
     pygame.init()
     pygame.display.set_caption("Sudoku")
     Font = pygame.font.SysFont('Comic Sans MS', 35)
+
+    #    field1 = TextField(51, 150, 50, pygame.font.SysFont("Comic Sans MS", 30))
+    #    field1group = pygame.sprite.Group(field1)
+
+    #    base_font = pygame.font.Font(None, 32)
+    #    user_text = ''
 
     # initialize starting grid
     grid_9x9 = numpy.zeros((9, 9), numpy.int8)
@@ -57,6 +67,7 @@ def main():
                 win.blit(value, ((j + 1) * 50 + 15, (i + 0.75) * 50 + 15 + 100))
                 pygame.display.flip()
 
+    # game loop
     run = True
     while run:
         clock.tick(60)
@@ -66,19 +77,25 @@ def main():
             if event.type == pygame.QUIT:
                 run = False
 
+        #            if event.type == pygame.KEYDOWN:
+        #                user_text += event.unicode
+
         # checks if boxes are highlighted
         selected_option_grid = list1.update(event_list)
         selected_option_algo = list2.update(event_list)
 
         if selected_option_grid >= 0:
             print("Grid Option: ", selected_option_grid)
+
             # board chosen to be 6x6
             if selected_option_grid == 0:
                 # initialize + populate grid
+                # current_grid = 6
                 grid_6x6 = numpy.zeros((6, 6), numpy.int8)
                 grid_6x6 = populate_grid(grid_6x6)
                 win.fill((251, 247, 245))
                 board(win, grid_6x6)
+
                 # populate board with starting numbers
                 for i in range(0, len(grid_6x6[0])):
                     for j in range(0, len(grid_6x6[0])):
@@ -87,9 +104,11 @@ def main():
                             # add to screen with blit
                             win.blit(value, ((j + 1) * 50 + 15, (i + 0.75) * 50 + 15 + 100))
                             pygame.display.flip()
+
             # board chosen to be 9x9
             elif selected_option_grid == 1:
                 # initialize + populate grid
+                # current_grid = 9
                 grid_9x9 = numpy.zeros((9, 9), numpy.int8)
                 grid_9x9 = populate_grid(grid_9x9)
                 win.fill((251, 247, 245))
@@ -129,6 +148,11 @@ def main():
         if stp_button.draw(win):
             print("Next Step is...")
 
+        # draws comments
+        title.draw(win, "Sue Dooku: The Sudoku Solver")
+        names1.draw(win, "Joseph Baliestiero, Cierra O'Grady,")
+        names2.draw(win, "Gibson Phillips, and Andrew Simonini")
+
         # draws rectangles to hide the option box options
         pygame.draw.rect(win, (251, 247, 245), pygame.Rect(700, 440, 160, 120))
         pygame.draw.rect(win, (251, 247, 245), pygame.Rect(700, 490, 160, 120))
@@ -136,7 +160,14 @@ def main():
         list2.draw(win)
         list1.draw(win)
 
+        #        text_surface = base_font.render(user_text, True, (0, 0, 0))
+        #        win.blit(text_surface, (0,0))
+
         pygame.display.flip()
+
+    #        if current_grid == 6:
+    #            field1group.update(event_list)
+    #            field1group.draw(win)
 
     pygame.quit()
     exit()
@@ -245,6 +276,7 @@ def board(window, grid_size):
                              (50 * (num_columns_rows + 1), 50 + 50 * i + 100),
                              1)
     return pygame.display.flip()
+
 
 # helper function
 # fill board with random numbers
