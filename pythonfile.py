@@ -36,7 +36,7 @@ stp_button = Button(355, 825, stp_Button_img, 1)
 list1 = OptionBox(700, 400, 160, 40, (150, 150, 150), (100, 200, 255), pygame.font.SysFont('Comic Sans MS', 30),
                   ["9x9", "6x6", "12x12"])
 list2 = OptionBox(700, 450, 160, 40, (150, 150, 150), (100, 200, 255), pygame.font.SysFont('Comic Sans MS', 25),
-                  ["Dijkstra", "Last Box", "A Star"])
+                  ["DFS", "Last Box", "A Star"])
 # create comment instances
 title = TextComment(50, 40, "Comic Sans MS", (0, 0, 0), 40)
 names1 = TextComment(55, 90, "Comic Sans MS", (0, 0, 0), 20)
