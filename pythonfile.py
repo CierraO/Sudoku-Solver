@@ -31,7 +31,7 @@ sol_button = Button(100, 825, sol_Button_img, 1)
 stp_button = Button(225, 825, stp_Button_img, 1)
 # create option box instances
 list1 = OptionBox(700, 400, 160, 40, (150, 150, 150), (100, 200, 255), pygame.font.SysFont('Comic Sans MS', 30),
-                  ["6x6", "9x9", "12x12"])
+                  ["9x9", "6x6", "12x12"])
 list2 = OptionBox(700, 450, 160, 40, (150, 150, 150), (100, 200, 255), pygame.font.SysFont('Comic Sans MS', 25),
                   ["Dijkstra", "Last Box", "A Star"])
 
@@ -40,7 +40,6 @@ def main():
     pygame.init()
     pygame.display.set_caption("Sudoku")
     font = pygame.font.SysFont('Comic Sans MS', 35)
-
     # initialize starting grid
     grid_9x9 = numpy.zeros((9, 9), numpy.int8)
     # populate starting grid
@@ -55,7 +54,6 @@ def main():
                 # add to screen with blit
                 win.blit(value, ((j + 1) * 50 + 15, (i + 0.75) * 50 + 15 + 100))
                 pygame.display.flip()
-
     run = True
     while run:
         clock.tick(60)
@@ -69,7 +67,7 @@ def main():
         if selected_option_grid >= 0:
             print("Grid Option: ", selected_option_grid)
             # board chosen to be 6x6
-            if selected_option_grid == 0:
+            if selected_option_grid == 1:
                 # initialize + populate grid
                 grid_6x6 = numpy.zeros((6, 6), numpy.int8)
                 grid_6x6 = populate_grid(grid_6x6)
@@ -84,7 +82,7 @@ def main():
                             win.blit(value, ((j + 1) * 50 + 15, (i + 0.75) * 50 + 15 + 100))
                             pygame.display.flip()
             # board chosen to be 9x9
-            elif selected_option_grid == 1:
+            elif selected_option_grid == 0:
                 # initialize + populate grid
                 grid_9x9 = numpy.zeros((9, 9), numpy.int8)
                 grid_9x9 = populate_grid(grid_9x9)
@@ -251,14 +249,13 @@ def populate_grid(grid):
     # fill in board
     for i in range(0, len(grid[0])):
         for j in range(0, len(grid[0])):
-            if random.randint(0, 10) <= 2:  # approximate 20% chance to fill the space with a number
+            if random.randint(0, 10) <= 2:  # if number is 0,1,2 -> fill the space with a number
                 new_grid[i][j] = random.randint(0, len(grid))
                 # if the filled in non-zero number appears twice in the same row or column, remove most recent placement
                 if (((numpy.sum(new_grid[i, :] == new_grid[i][j]) > 1) |
                         (numpy.sum(new_grid[:, j] == new_grid[i][j]) > 1)) &
                         (new_grid[i][j] != 0)):
                     new_grid[i][j] = 0
-            print(new_grid[::3, ::3])
             # clear duplicates in the same subsection
             if len(grid) == 9:  # 9x9 grid, 3x3 subsections
                 if (((numpy.sum(new_grid[:3, :3] == new_grid[i][j])) > 1) |  # top left subsection
