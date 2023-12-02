@@ -2,7 +2,6 @@ import random
 
 import pygame
 import numpy
-
 from ui_elements import Button, OptionBox
 
 pygame.font.init()
@@ -20,15 +19,18 @@ clock = pygame.time.Clock()
 win = pygame.display.set_mode((WIDTH, WIDTH))
 win.fill(background_color)
 
+
 # load all button images
-gen_button_img = pygame.image.load('resources/button_generate.png').convert_alpha()
-sol_Button_img = pygame.image.load('resources/button_solve-3.png').convert_alpha()
-stp_Button_img = pygame.image.load('resources/button_step-3.png').convert_alpha()
+gen_button_img = pygame.image.load('resources/button_generate_updated.png').convert_alpha()
+sol_Button_img = pygame.image.load('resources/button_solve_updated.png').convert_alpha()
+stp_Button_img = pygame.image.load('resources/button_step.png').convert_alpha()
 
 # create button instances
+
 gen_button = Button(100, 770, gen_button_img, 1)
 sol_button = Button(100, 825, sol_Button_img, 1)
 stp_button = Button(225, 825, stp_Button_img, 1)
+
 # create option box instances
 list1 = OptionBox(700, 400, 160, 40, (150, 150, 150), (100, 200, 255), pygame.font.SysFont('Comic Sans MS', 30),
                   ["9x9", "6x6", "12x12"])
