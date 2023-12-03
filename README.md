@@ -1,5 +1,6 @@
 # Sudoku-Solver
 An AI application to solve NxN sudoku puzzles using various algorithms
+<p align="center"><img align="center" src="./__screenshots/sudoku-solver.gif" alt="Program Demo" width="500"/></p>
 
 ## Desired Functionality
 * **Generate puzzles:** given a puzzle size, the application will generate a new puzzle
