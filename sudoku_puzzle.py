@@ -28,7 +28,7 @@ class SudokuPuzzle:
         as well as the position of the newly-added number. If there are
         no remaining steps, returns False."""
         if not self.solution_node:
-            self.get_solution()
+            self.get_solution(algorithm)
         path = self.solution_node.path()
 
         if self.step < len(path):

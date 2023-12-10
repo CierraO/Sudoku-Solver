@@ -36,7 +36,7 @@ stp_button = Button(355, 825, stp_Button_img, 1)
 list1 = OptionBox(700, 400, 160, 40, (150, 150, 150), (100, 200, 255), pygame.font.SysFont('Comic Sans MS', 30),
                   ["9x9", "6x6", "12x12"])
 list2 = OptionBox(700, 450, 160, 40, (150, 150, 150), (100, 200, 255), pygame.font.SysFont('Comic Sans MS', 25),
-                  ["DFS", "Last Box", "A Star"])
+                  ["DFS", "LP", "A Star"])
 # create comment instances
 title = TextComment(50, 40, "Comic Sans MS", (0, 0, 0), 40)
 names1 = TextComment(55, 90, "Comic Sans MS", (0, 0, 0), 20)
@@ -129,8 +129,8 @@ def main():
             print("Generating Puzzle...")
         if sol_button.draw(win):
             print('Solving Puzzle...')
-            if puzzle.get_solution():
-                populate_board(puzzle.get_solution()[0])
+            if puzzle.get_solution(list2.selected):
+                populate_board(puzzle.get_solution(list2.selected)[0])
             print("Solved! (If possible)")
 
         if stp_button.draw(win):
@@ -139,7 +139,7 @@ def main():
                 print("CLEARING")
                 clear_board()
 
-            g, new_num = puzzle.step_through()
+            g, new_num = puzzle.step_through(list2.selected)
             if g:
                 if new_num:
                     populate_board(g, new_num)

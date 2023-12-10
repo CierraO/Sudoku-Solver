@@ -11,6 +11,10 @@ from enum import Enum
 
 from utils import *
 
+import numpy as np
+
+import scipy as sp
+
 
 class Problem:
     """The abstract class for a formal problem. You should subclass
@@ -207,6 +211,7 @@ class SimpleProblemSolvingAgent:
 class SudokuAgent(SimpleProblemSolvingAgent):
     """A problem-solving agent to find solutions to sudoku puzzles.
         It is assumed that the given problem is a SudokuProblem."""
+
     def update_state(self, state, percept):
         return percept
 
@@ -219,11 +224,12 @@ class SudokuAgent(SimpleProblemSolvingAgent):
         return problem
 
     def search(self, algorithm):
+        algorithm = Algorithms(algorithm)
         match algorithm:
             case Algorithms.DEPTH_FIRST:
                 goal_node = depth_first_tree_search(self.problem)
-            case Algorithms.DIJKSTRA:
-                raise NotImplementedError
+            case Algorithms.SIMPLEX:
+                goal_node = simplex_search(self.problem)
             case Algorithms.LAST_BOX:
                 raise NotImplementedError
             case Algorithms.A_STAR:
@@ -239,7 +245,7 @@ class SudokuAgent(SimpleProblemSolvingAgent):
 
 class Algorithms(Enum):
     DEPTH_FIRST = 0
-    DIJKSTRA = 1
+    SIMPLEX = 1
     LAST_BOX = 2
     A_STAR = 3
 
@@ -261,7 +267,46 @@ def depth_first_tree_search(problem):
             return node
         frontier.extend(node.expand(problem))
     return None
-    
+
+
+def simplex_search(problem):
+    """
+    Uses linear programming to find solution to the Sudoku puzzle
+    """
+    matrix = np.zeros((324, 729))
+    for i in range(9):  # Inequalities for rows
+        for j in range(9):
+            for k in range(9):
+                matrix[9 * i + j][k + 9 * j + 81 * i] = 1
+    for i in range(9):  # Inequalities for columns
+        for k in range(9):
+            for j in range(9):
+                matrix[9 * i + k + 81][k + 9 * j + 81 * i] = 1
+    for j in range(9):  # Inequalities for 3d rows (z-axis)
+        for k in range(9):
+            for i in range(9):
+                matrix[9 * j + k + 162][k + 9 * j + 81 * i] = 1
+
+    for n in range(9):
+        for k in range(9):
+            for x in [0, 9, 18, 81, 90, 99, 162, 171, 180]:
+                matrix[9 * n + k + 243][x + k + 27 * (n % 3) + 243 * (n // 3)] = 1
+    b = np.full(324, 1).transpose()
+
+    bound_list = [(0, 1) for _ in range(729)]
+    for x in range(9):
+        for y in range(9):
+            if problem.initial[x][y] != 0:
+                bound_list[9*(9*x + y) + problem.initial[x][y] - 1] = (1, 1)
+
+    result = sp.optimize.linprog(c=np.ones(729), A_eq=matrix, b_eq=b, bounds=bound_list, integrality=1, method='highs')
+    result.x = np.round(result.x)
+
+    output = np.reshape([np.where(row == 1)[0] + 1 for row in np.reshape(result.x, (81, 9))], (9, 9))
+    output = Node(output.tolist())
+
+    return output
+
 
 def best_first_graph_search(problem, f, display=False):
     """Search the nodes with the lowest f scores first.
