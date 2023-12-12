@@ -273,38 +273,91 @@ def simplex_search(problem):
     """
     Uses linear programming to find solution to the Sudoku puzzle
     """
-    matrix = np.zeros((324, 729))
-    for i in range(9):  # Inequalities for rows
-        for j in range(9):
-            for k in range(9):
-                matrix[9 * i + j][k + 9 * j + 81 * i] = 1
-    for i in range(9):  # Inequalities for columns
-        for k in range(9):
+    if len(problem.initial) == 9:
+        matrix = np.zeros((324, 729))
+        for i in range(9):  # Inequalities for rows
             for j in range(9):
-                matrix[9 * i + k + 81][k + 9 * j + 81 * i] = 1
-    for j in range(9):  # Inequalities for 3d rows (z-axis)
-        for k in range(9):
-            for i in range(9):
-                matrix[9 * j + k + 162][k + 9 * j + 81 * i] = 1
-
-    for n in range(9):
-        for k in range(9):
-            for x in [0, 9, 18, 81, 90, 99, 162, 171, 180]:
-                matrix[9 * n + k + 243][x + k + 27 * (n % 3) + 243 * (n // 3)] = 1
-    b = np.full(324, 1).transpose()
-
-    bound_list = [(0, 1) for _ in range(729)]
-    for x in range(9):
-        for y in range(9):
-            if problem.initial[x][y] != 0:
-                bound_list[9*(9*x + y) + problem.initial[x][y] - 1] = (1, 1)
-
-    result = sp.optimize.linprog(c=np.ones(729), A_eq=matrix, b_eq=b, bounds=bound_list, integrality=1, method='highs')
-    result.x = np.round(result.x)
-
-    output = np.reshape([np.where(row == 1)[0] + 1 for row in np.reshape(result.x, (81, 9))], (9, 9))
-    output = Node(output.tolist())
-
+                for k in range(9):
+                    matrix[9 * i + j][k + 9 * j + 81 * i] = 1
+        for i in range(9):  # Inequalities for columns
+            for k in range(9):
+                for j in range(9):
+                    matrix[9 * i + k + 81][k + 9 * j + 81 * i] = 1
+        for j in range(9):  # Inequalities for 3d rows (z-axis)
+            for k in range(9):
+                for i in range(9):
+                    matrix[9 * j + k + 162][k + 9 * j + 81 * i] = 1
+        for n in range(9):
+            for k in range(9):
+                for x in [0, 9, 18, 81, 90, 99, 162, 171, 180]:
+                    matrix[9 * n + k + 243][x + k + 27 * (n % 3) + 243 * (n // 3)] = 1
+        b = np.full(324, 1).transpose()
+        bound_list = [(0, 1) for _ in range(729)]
+        for x in range(9):
+            for y in range(9):
+                if problem.initial[x][y] != 0:
+                    bound_list[9*(9*x + y) + problem.initial[x][y] - 1] = (1, 1)
+        result = sp.optimize.linprog(c=np.ones(729), A_eq=matrix, b_eq=b, bounds=bound_list, integrality=1, method='highs')
+        result.x = np.round(result.x)
+        output = np.reshape([np.where(row == 1)[0] + 1 for row in np.reshape(result.x, (81, 9))], (9, 9))
+        output = Node(output.tolist())
+    elif len(problem.initial) == 6:  # board is 6x6
+        matrix = np.zeros((, 216))
+        for i in range(6):  # Inequalities for rows
+            for j in range(6):
+                for k in range(6):
+                    matrix[6 * i + j][k + 6 * j + 36 * i] = 1
+        for i in range(6):  # Inequalities for columns
+            for k in range(6):
+                for j in range(6):
+                    matrix[6 * i + k + 36][k + 6 * j + 36 * i] = 1
+        for j in range(6):  # Inequalities for 3d rows (z-axis)
+            for k in range(6):
+                for i in range(6):
+                    matrix[6 * j + k + 162][k + 6 * j + 36 * i] = 1
+        for n in range(6):
+            for k in range(6):
+                for x in [0, 6, 12, 36, 42, 48]:
+                    matrix[9 * n + k + 243][x + k + 27 * (n % 3) + 243 * (n // 3)] = 1
+        b = np.full(, 1).transpose()
+        bound_list = [(0, 1) for _ in range(216)]
+        for x in range(6):
+            for y in range(6):
+                if problem.initial[x][y] != 0:
+                    bound_list[6 * (6 * x + y) + problem.initial[x][y] - 1] = (1, 1)
+        result = sp.optimize.linprog(c=np.ones(216), A_eq=matrix, b_eq=b, bounds=bound_list, integrality=1, method='highs')
+        result.x = np.round(result.x)
+        output = np.reshape([np.where(row == 1)[0] + 1 for row in np.reshape(result.x, (36, 6))], (6, 6))
+        output = Node(output.tolist())
+    elif len(problem.initial) == 12:  # board is 12x12
+        matrix = np.zeros((324, 729))
+        for i in range(9):  # Inequalities for rows
+            for j in range(9):
+                for k in range(9):
+                    matrix[9 * i + j][k + 9 * j + 81 * i] = 1
+        for i in range(9):  # Inequalities for columns
+            for k in range(9):
+                for j in range(9):
+                    matrix[9 * i + k + 81][k + 9 * j + 81 * i] = 1
+        for j in range(9):  # Inequalities for 3d rows (z-axis)
+            for k in range(9):
+                for i in range(9):
+                    matrix[9 * j + k + 162][k + 9 * j + 81 * i] = 1
+        for n in range(9):
+            for k in range(9):
+                for x in [0, 9, 18, 81, 90, 99, 162, 171, 180]:
+                    matrix[9 * n + k + 243][x + k + 27 * (n % 3) + 243 * (n // 3)] = 1
+        b = np.full(324, 1).transpose()
+        bound_list = [(0, 1) for _ in range(729)]
+        for x in range(9):
+            for y in range(9):
+                if problem.initial[x][y] != 0:
+                    bound_list[9 * (9 * x + y) + problem.initial[x][y] - 1] = (1, 1)
+        result = sp.optimize.linprog(c=np.ones(729), A_eq=matrix, b_eq=b, bounds=bound_list, integrality=1,
+                                     method='highs')
+        result.x = np.round(result.x)
+        output = np.reshape([np.where(row == 1)[0] + 1 for row in np.reshape(result.x, (81, 9))], (9, 9))
+        output = Node(output.tolist())
     return output
 
 
