@@ -218,20 +218,21 @@ class SudokuAgent(SimpleProblemSolvingAgent):
         problem = self.problem.initial
         return problem
 
-    def search(self, algorithm):
-        match algorithm:
-            case Algorithms.DEPTH_FIRST:
-                goal_node = depth_first_tree_search(self.problem)
-            case Algorithms.DIJKSTRA:
-                raise NotImplementedError
-            case Algorithms.LAST_BOX:
-                raise NotImplementedError
-            case Algorithms.A_STAR:
-                raise NotImplementedError
-            case _:
-                goal_node = depth_first_tree_search(self.problem)
 
-        return goal_node
+    def search(self, algorithm):
+       match algorithm:
+           case Algorithms.DEPTH_FIRST:
+               goal_node = depth_first_tree_search(self.problem)
+           case Algorithms.DIJKSTRA:
+               raise NotImplementedError
+           case Algorithms.LAST_BOX:
+               raise NotImplementedError
+           case Algorithms.A_STAR:
+               raise NotImplementedError
+           case _:
+               goal_node = depth_first_tree_search(self.problem)
+
+       return goal_node
 
 
 # ______________________________________________________________________________

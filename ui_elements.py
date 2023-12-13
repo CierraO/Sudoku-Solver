@@ -47,9 +47,10 @@ class Button:
 
 
 class TextField(pygame.sprite.Sprite):
-    def __init__(self, x, y, w, font):
+    def __init__(self, x, y, w, font, limiter):
         super().__init__()
         self.color = (0, 0, 0)
+        self.limiter = False
         self.backcolor = None
         self.pos = (x, y)
         self.width = w
@@ -59,9 +60,9 @@ class TextField(pygame.sprite.Sprite):
         self.draw()
 
     def draw(self):
-        t_surf = self.font.render(self.text, True, self.color, self.backcolor)
+        t_surf = self.font.render(self.text, True, self.color, self.backcolor)  # renders the initial box
         self.image = pygame.Surface((max(self.width, t_surf.get_width() + 10), t_surf.get_height() + 10),
-                                    pygame.SRCALPHA)
+                                    pygame.SRCALPHA)  # makes it so the box expands with text
         if self.backcolor:
             self.image.fill(self.backcolor)
         self.image.blit(t_surf, (5, 5))
@@ -70,18 +71,36 @@ class TextField(pygame.sprite.Sprite):
 
     def update(self, event_list):
         for event in event_list:
+            # if mouse is clicked, make rectangle active
             if event.type == pygame.MOUSEBUTTONDOWN and not self.active:
                 self.active = self.rect.collidepoint(event.pos)
-            if event.type == pygame.KEYDOWN and self.active:
-                if event.key == pygame.K_RETURN:
-                    self.active = False
-                elif event.key == pygame.K_BACKSPACE:
-                    self.text = self.text[0:-1]
-                elif event.key == pygame.K_DELETE:
-                    self.text = self.text[0:-1]
-                else:
-                    self.text += event.unicode
-                self.draw()
+            elif event.type == pygame.MOUSEBUTTONDOWN and self.active:
+                self.active = False
+
+            if self.limiter == False:
+                # if key is pressed down while active...
+                if event.type == pygame.KEYDOWN and self.active:
+                    if event.key == pygame.K_RETURN:  # make key inactive
+                        self.active = False
+                    elif event.key == pygame.K_BACKSPACE:   # move back one space
+                        self.text = self.text[0:-1]
+                    elif event.key == pygame.K_DELETE:   # move back one space
+                        self.text = self.text[0:-1]
+                    else:   # type whatever key is pressed
+                        self.text += event.unicode
+                self.draw()  # draw the key
+
+            if self.limiter == True:
+                # if key is pressed down while active...
+                if event.type == pygame.KEYDOWN and self.active:
+                    if event.key == pygame.K_RETURN:  # make key inactive
+                        self.active = False
+                    elif event.key == pygame.K_BACKSPACE:  # move back one space
+                        self.text = self.text[0:-1]
+                    elif event.key == pygame.K_DELETE:  # move back one space
+                        self.text = self.text[0:-1]
+                self.draw()  # draw the key
+
 
 
 class OptionBox:

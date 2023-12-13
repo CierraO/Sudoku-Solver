@@ -4,8 +4,7 @@ import pygame
 import numpy
 
 from sudoku_puzzle import SudokuPuzzle
-from ui_elements import Button, OptionBox, TextComment
-
+from ui_elements import Button, OptionBox, TextComment, TextField
 
 pygame.font.init()
 
@@ -41,6 +40,33 @@ list2 = OptionBox(700, 450, 160, 40, (150, 150, 150), (100, 200, 255), pygame.fo
 title = TextComment(50, 40, "Comic Sans MS", (0, 0, 0), 40)
 names1 = TextComment(55, 90, "Comic Sans MS", (0, 0, 0), 20)
 names2 = TextComment(55, 115, "Comic Sans MS", (0, 0, 0), 20)
+dataInputTag = TextComment(655, 500, "Comic Sans MS", (0, 0, 0), 15)
+
+# create text field instances
+dataInputCol1 = TextField(655, 520, 256, pygame.font.SysFont("Comic Sans MS", 15), False)
+dataInputCol2 = TextField(655, 550, 256, pygame.font.SysFont("Comic Sans MS", 15), False)
+dataInputCol3 = TextField(655, 580, 256, pygame.font.SysFont("Comic Sans MS", 15), False)
+dataInputCol4 = TextField(655, 610, 256, pygame.font.SysFont("Comic Sans MS", 15), False)
+dataInputCol5 = TextField(655, 640, 256, pygame.font.SysFont("Comic Sans MS", 15), False)
+dataInputCol6 = TextField(655, 670, 256, pygame.font.SysFont("Comic Sans MS", 15), False)
+dataInputCol7 = TextField(655, 700, 256, pygame.font.SysFont("Comic Sans MS", 15), False)
+dataInputCol8 = TextField(655, 730, 256, pygame.font.SysFont("Comic Sans MS", 15), False)
+dataInputCol9 = TextField(655, 760, 256, pygame.font.SysFont("Comic Sans MS", 15), False)
+dataInputCol10 = TextField(655, 790, 256, pygame.font.SysFont("Comic Sans MS", 15), False)
+dataInputCol11 = TextField(655, 820, 256, pygame.font.SysFont("Comic Sans MS", 15), False)
+dataInputCol12 = TextField(655, 850, 256, pygame.font.SysFont("Comic Sans MS", 15), False)
+dataInputGroup1 = pygame.sprite.Group(dataInputCol1)
+dataInputGroup2 = pygame.sprite.Group(dataInputCol2)
+dataInputGroup3 = pygame.sprite.Group(dataInputCol3)
+dataInputGroup4 = pygame.sprite.Group(dataInputCol4)
+dataInputGroup5 = pygame.sprite.Group(dataInputCol5)
+dataInputGroup6 = pygame.sprite.Group(dataInputCol6)
+dataInputGroup7 = pygame.sprite.Group(dataInputCol7)
+dataInputGroup8 = pygame.sprite.Group(dataInputCol8)
+dataInputGroup9 = pygame.sprite.Group(dataInputCol9)
+dataInputGroup10 = pygame.sprite.Group(dataInputCol10)
+dataInputGroup11 = pygame.sprite.Group(dataInputCol11)
+dataInputGroup12 = pygame.sprite.Group(dataInputCol12)
 
 
 def main():
@@ -49,9 +75,6 @@ def main():
     #   current_grid = 9
     pygame.init()
     pygame.display.set_caption("Sudoku")
-
-    #    field1 = TextField(51, 150, 50, pygame.font.SysFont("Comic Sans MS", 30))
-    #    field1group = pygame.sprite.Group(field1)
 
     #    base_font = pygame.font.Font(None, 32)
     #    user_text = ''
@@ -67,6 +90,7 @@ def main():
     # sets up the starting board
     board(win, starting_grid)
     populate_board(starting_grid)
+    grid_check = -1
 
     # game loop
     run = True
@@ -82,11 +106,12 @@ def main():
         # checks if boxes are highlighted
         selected_option_grid = list1.update(event_list)
         selected_option_algo = list2.update(event_list)
-        if selected_option_grid >= 0:
+        if selected_option_grid <= 0:
             print("Grid Option: ", selected_option_grid)
 
             # board chosen to be 6x6
             if selected_option_grid == 1:
+                grid_check = 1
                 # initialize + populate grid
                 # current_grid = 6
                 grid_6x6 = numpy.zeros((6, 6), numpy.int8)
@@ -100,6 +125,7 @@ def main():
 
             # board chosen to be 9x9
             elif selected_option_grid == 0:
+                grid_check = 0
                 # initialize + populate grid
                 # current_grid = 9
                 grid_9x9 = numpy.zeros((9, 9), numpy.int8)
@@ -113,6 +139,7 @@ def main():
 
             # board chosen to be 12x12
             elif selected_option_grid == 2:
+                grid_check = 2
                 # initialize + populate grid
                 grid_12x12 = numpy.zeros((12, 12), numpy.int8)
                 grid_12x12 = populate_grid(grid_12x12)
@@ -127,6 +154,32 @@ def main():
         # draw buttons and functionality
         if gen_button.draw(win):
             print("Generating Puzzle...")
+            '''
+            if (len(dataInputCol1.text) > 0 or len(dataInputCol2.text) > 0 or len(dataInputCol3.text) > 0 or len(dataInputCol4.text) > 0 or len(dataInputCol5.text) > 0 or len(dataInputCol6.text) > 0) or len(dataInputCol7.text) > 0 or len(dataInputCol8.text) > 0 or len(dataInputCol9.text) > 0:
+                value_array = []
+                raw_lists = []
+                raw_lists.append(dataInputCol1)
+                raw_lists.append(dataInputCol2)
+                raw_lists.append(dataInputCol3)
+                raw_lists.append(dataInputCol4)
+                raw_lists.append(dataInputCol5)
+                raw_lists.append(dataInputCol6)
+                raw_lists.append(dataInputCol7)
+                raw_lists.append(dataInputCol8)
+                raw_lists.append(dataInputCol9)
+                for raw_list in raw_lists:
+                    if len(raw_list.text) < 25 or len(raw_list.text):
+                        raw_list.text = "0, 0, 0, 0, 0, 0, 0, 0, 0"
+
+                for raw_list in raw_lists:
+                    split_list = raw_list.text.split(", ")
+                    for single_item in split_list:
+                        value = int(single_item)
+                        value_array.append(value)
+            print(value_array)
+            '''
+
+
         if sol_button.draw(win):
             print('Solving Puzzle...')
             if puzzle.get_solution():
@@ -154,6 +207,239 @@ def main():
         # draws rectangles to hide the option box options
         pygame.draw.rect(win, (251, 247, 245), pygame.Rect(700, 440, 160, 120))
         pygame.draw.rect(win, (251, 247, 245), pygame.Rect(700, 490, 160, 120))
+
+        # draws rectangle to make font all cohesive for comment
+        pygame.draw.rect(win, (251, 247, 245), pygame.Rect(655, 500, 400, 20))
+        dataInputTag.draw(win, "Input String of Data w/ Commas in Between")
+
+        # draws and updates data input text file
+        pygame.draw.rect(win, (251, 247, 245), pygame.Rect(655, 520, 400, 500))
+
+        if grid_check == 0:
+            # checks number limit for every single text input
+            if len(dataInputCol1.text) >= 25:
+                dataInputCol1.limiter = True
+            else:
+                dataInputCol1.limiter = False
+
+            if len(dataInputCol2.text) >= 25:
+                dataInputCol2.limiter = True
+            else:
+                dataInputCol2.limiter = False
+
+            if len(dataInputCol3.text) >= 25:
+                dataInputCol3.limiter = True
+            else:
+                dataInputCol3.limiter = False
+
+            if len(dataInputCol4.text) >= 25:
+                dataInputCol4.limiter = True
+            else:
+                dataInputCol4.limiter = False
+
+            if len(dataInputCol5.text) >= 25:
+                dataInputCol5.limiter = True
+            else:
+                dataInputCol5.limiter = False
+
+            if len(dataInputCol6.text) >= 25:
+                dataInputCol6.limiter = True
+            else:
+                dataInputCol6.limiter = False
+
+            if len(dataInputCol7.text) >= 25:
+                dataInputCol7.limiter = True
+            else:
+                dataInputCol7.limiter = False
+
+            if len(dataInputCol8.text) >= 25:
+                dataInputCol8.limiter = True
+            else:
+                dataInputCol8.limiter = False
+
+            if len(dataInputCol9.text) >= 25:
+                dataInputCol9.limiter = True
+            else:
+                dataInputCol9.limiter = False
+
+            # draws and updates every 9x9 text input
+            dataInputGroup1.update(event_list)
+            dataInputGroup1.draw(win)
+
+            dataInputGroup2.update(event_list)
+            dataInputGroup2.draw(win)
+
+            dataInputGroup3.update(event_list)
+            dataInputGroup3.draw(win)
+
+            dataInputGroup4.update(event_list)
+            dataInputGroup4.draw(win)
+
+            dataInputGroup5.update(event_list)
+            dataInputGroup5.draw(win)
+
+            dataInputGroup6.update(event_list)
+            dataInputGroup6.draw(win)
+
+            dataInputGroup7.update(event_list)
+            dataInputGroup7.draw(win)
+
+            dataInputGroup8.update(event_list)
+            dataInputGroup8.draw(win)
+
+            dataInputGroup9.update(event_list)
+            dataInputGroup9.draw(win)
+
+        if grid_check == 1:
+
+            # checks number limit for every single text input
+            if len(dataInputCol1.text) >= 16:
+                dataInputCol1.limiter = True
+            else:
+                dataInputCol1.limiter = False
+
+            if len(dataInputCol2.text) >= 16:
+                dataInputCol2.limiter = True
+            else:
+                dataInputCol2.limiter = False
+
+            if len(dataInputCol3.text) >= 16:
+                dataInputCol3.limiter = True
+            else:
+                dataInputCol3.limiter = False
+
+            if len(dataInputCol4.text) >= 16:
+                dataInputCol4.limiter = True
+            else:
+                dataInputCol4.limiter = False
+
+            if len(dataInputCol5.text) >= 16:
+                dataInputCol5.limiter = True
+            else:
+                dataInputCol5.limiter = False
+
+            if len(dataInputCol6.text) >= 16:
+                dataInputCol6.limiter = True
+            else:
+                dataInputCol6.limiter = False
+
+            dataInputGroup1.update(event_list)
+            dataInputGroup1.draw(win)
+
+            dataInputGroup2.update(event_list)
+            dataInputGroup2.draw(win)
+
+            dataInputGroup3.update(event_list)
+            dataInputGroup3.draw(win)
+
+            dataInputGroup4.update(event_list)
+            dataInputGroup4.draw(win)
+
+            dataInputGroup5.update(event_list)
+            dataInputGroup5.draw(win)
+
+            dataInputGroup6.update(event_list)
+            dataInputGroup6.draw(win)
+
+        if grid_check == 2:
+
+            # checks number limit for every single text input
+            if len(dataInputCol1.text) >= 37:
+                dataInputCol1.limiter = True
+            else:
+                dataInputCol1.limiter = False
+
+            if len(dataInputCol2.text) >= 37:
+                dataInputCol2.limiter = True
+            else:
+                dataInputCol2.limiter = False
+
+            if len(dataInputCol3.text) >= 37:
+                dataInputCol3.limiter = True
+            else:
+                dataInputCol3.limiter = False
+
+            if len(dataInputCol4.text) >= 37:
+                dataInputCol4.limiter = True
+            else:
+                dataInputCol4.limiter = False
+
+            if len(dataInputCol5.text) >= 37:
+                dataInputCol5.limiter = True
+            else:
+                dataInputCol5.limiter = False
+
+            if len(dataInputCol6.text) >= 37:
+                dataInputCol6.limiter = True
+            else:
+                dataInputCol6.limiter = False
+
+            if len(dataInputCol7.text) >= 37:
+                dataInputCol7.limiter = True
+            else:
+                dataInputCol7.limiter = False
+
+            if len(dataInputCol8.text) >= 37:
+                dataInputCol8.limiter = True
+            else:
+                dataInputCol8.limiter = False
+
+            if len(dataInputCol9.text) >= 37:
+                dataInputCol9.limiter = True
+            else:
+                dataInputCol9.limiter = False
+
+            if len(dataInputCol10.text) >= 37:
+                dataInputCol10.limiter = True
+            else:
+                dataInputCol10.limiter = False
+
+            if len(dataInputCol11.text) >= 37:
+                dataInputCol11.limiter = True
+            else:
+                dataInputCol11.limiter = False
+
+            if len(dataInputCol12.text) >= 37:
+                dataInputCol12.limiter = True
+            else:
+                dataInputCol12.limiter = False
+
+            dataInputGroup1.update(event_list)
+            dataInputGroup1.draw(win)
+
+            dataInputGroup2.update(event_list)
+            dataInputGroup2.draw(win)
+
+            dataInputGroup3.update(event_list)
+            dataInputGroup3.draw(win)
+
+            dataInputGroup4.update(event_list)
+            dataInputGroup4.draw(win)
+
+            dataInputGroup5.update(event_list)
+            dataInputGroup5.draw(win)
+
+            dataInputGroup6.update(event_list)
+            dataInputGroup6.draw(win)
+
+            dataInputGroup7.update(event_list)
+            dataInputGroup7.draw(win)
+
+            dataInputGroup8.update(event_list)
+            dataInputGroup8.draw(win)
+
+            dataInputGroup9.update(event_list)
+            dataInputGroup9.draw(win)
+
+            dataInputGroup10.update(event_list)
+            dataInputGroup10.draw(win)
+
+            dataInputGroup11.update(event_list)
+            dataInputGroup11.draw(win)
+
+            dataInputGroup12.update(event_list)
+            dataInputGroup12.draw(win)
+
         # draws options boxes
         list2.draw(win)
         list1.draw(win)
@@ -162,10 +448,6 @@ def main():
         #        win.blit(text_surface, (0,0))
 
         pygame.display.flip()
-
-    #        if current_grid == 6:
-    #            field1group.update(event_list)
-    #            field1group.draw(win)
 
     pygame.quit()
     exit()
@@ -287,49 +569,50 @@ def populate_grid(grid):
                 new_grid[i][j] = random.randint(0, len(grid))
                 # if the filled in non-zero number appears twice in the same row or column, remove most recent placement
                 if (((numpy.sum(new_grid[i, :] == new_grid[i][j]) > 1) |
-                        (numpy.sum(new_grid[:, j] == new_grid[i][j]) > 1)) &
+                     (numpy.sum(new_grid[:, j] == new_grid[i][j]) > 1)) &
                         (new_grid[i][j] != 0)):
                     new_grid[i][j] = 0
             # clear duplicates in the same subsection
             if len(grid) == 9:  # 9x9 grid, 3x3 subsections
                 if (((numpy.sum(new_grid[:3, :3] == new_grid[i][j])) > 1) |  # top left subsection
-                   ((numpy.sum(new_grid[3:6, :3] == new_grid[i][j])) > 1) |  # center left sub-section
-                   ((numpy.sum(new_grid[6:9, :3] == new_grid[i][j])) > 1) |  # bottom left subsection
-                   ((numpy.sum(new_grid[:3, 3:6] == new_grid[i][j])) > 1) |  # top center subsection
-                   ((numpy.sum(new_grid[3:6, 3:6] == new_grid[i][j])) > 1) |  # center center subsection
-                   ((numpy.sum(new_grid[6:9, 3:6] == new_grid[i][j])) > 1) |  # bottom center subsection
-                   ((numpy.sum(new_grid[:3, 6:9] == new_grid[i][j])) > 1) |  # top right subsection
-                   ((numpy.sum(new_grid[3:6, 6:9] == new_grid[i][j])) > 1) |  # center right subsection
-                   ((numpy.sum(new_grid[6:9, 6:9] == new_grid[i][j])) > 1)):  # bottom right subsection
+                        ((numpy.sum(new_grid[3:6, :3] == new_grid[i][j])) > 1) |  # center left sub-section
+                        ((numpy.sum(new_grid[6:9, :3] == new_grid[i][j])) > 1) |  # bottom left subsection
+                        ((numpy.sum(new_grid[:3, 3:6] == new_grid[i][j])) > 1) |  # top center subsection
+                        ((numpy.sum(new_grid[3:6, 3:6] == new_grid[i][j])) > 1) |  # center center subsection
+                        ((numpy.sum(new_grid[6:9, 3:6] == new_grid[i][j])) > 1) |  # bottom center subsection
+                        ((numpy.sum(new_grid[:3, 6:9] == new_grid[i][j])) > 1) |  # top right subsection
+                        ((numpy.sum(new_grid[3:6, 6:9] == new_grid[i][j])) > 1) |  # center right subsection
+                        ((numpy.sum(new_grid[6:9, 6:9] == new_grid[i][j])) > 1)):  # bottom right subsection
                     new_grid[i][j] = 0
             if len(grid) == 6:  # 6x6 grid, 3x2 subsections
                 if (((numpy.sum(new_grid[:2, :2] == new_grid[i][j])) > 1) |  # top left subsection
-                   ((numpy.sum(new_grid[2:4, :2] == new_grid[i][j])) > 1) |  # center left subsection
-                   ((numpy.sum(new_grid[4:6, :2] == new_grid[i][j])) > 1) |  # bottom left subsection
-                   ((numpy.sum(new_grid[:2, 2:4] == new_grid[i][j])) > 1) |  # top right subsection
-                   ((numpy.sum(new_grid[2:4, 2:4] == new_grid[i][j])) > 1) |  # center right subsection
-                   ((numpy.sum(new_grid[4:6, 2:4] == new_grid[i][j])) > 1)):  # bottom right subsection
+                        ((numpy.sum(new_grid[2:4, :2] == new_grid[i][j])) > 1) |  # center left subsection
+                        ((numpy.sum(new_grid[4:6, :2] == new_grid[i][j])) > 1) |  # bottom left subsection
+                        ((numpy.sum(new_grid[:2, 2:4] == new_grid[i][j])) > 1) |  # top right subsection
+                        ((numpy.sum(new_grid[2:4, 2:4] == new_grid[i][j])) > 1) |  # center right subsection
+                        ((numpy.sum(new_grid[4:6, 2:4] == new_grid[i][j])) > 1)):  # bottom right subsection
                     new_grid[i][j] = 0
             if len(grid) == 12:  # 12x12 grid, 4x3 subsections
                 if (((numpy.sum(new_grid[:3, :4] == new_grid[i][j])) > 1) |  # top left subsection
-                   ((numpy.sum(new_grid[3:6, :4] == new_grid[i][j])) > 1) |  # top center left subsection
-                   ((numpy.sum(new_grid[6:9, :4] == new_grid[i][j])) > 1) |  # bottom center left subsection
-                   ((numpy.sum(new_grid[9:12, :4] == new_grid[i][j])) > 1) |  # bottom left subsection
-                   ((numpy.sum(new_grid[:3, 4:8] == new_grid[i][j])) > 1) |  # top center subsection
-                   ((numpy.sum(new_grid[3:6, 4:8] == new_grid[i][j])) > 1) |  # top center center subsection
-                   ((numpy.sum(new_grid[6:9, 4:8] == new_grid[i][j])) > 1) |  # bottom center center subsection
-                   ((numpy.sum(new_grid[9:12, 4:8] == new_grid[i][j])) > 1) |  # bottom center subsection
-                   ((numpy.sum(new_grid[:3, 8:12] == new_grid[i][j])) > 1) |  # top right subsection
-                   ((numpy.sum(new_grid[3:6, 8:12] == new_grid[i][j])) > 1) |  # top center right subsection
-                   ((numpy.sum(new_grid[6:9, 8:12] == new_grid[i][j])) > 1) |  # bottom center right subsection
-                   ((numpy.sum(new_grid[9:12, 8:12] == new_grid[i][j])) > 1)):  # bottom right subsection
+                        ((numpy.sum(new_grid[3:6, :4] == new_grid[i][j])) > 1) |  # top center left subsection
+                        ((numpy.sum(new_grid[6:9, :4] == new_grid[i][j])) > 1) |  # bottom center left subsection
+                        ((numpy.sum(new_grid[9:12, :4] == new_grid[i][j])) > 1) |  # bottom left subsection
+                        ((numpy.sum(new_grid[:3, 4:8] == new_grid[i][j])) > 1) |  # top center subsection
+                        ((numpy.sum(new_grid[3:6, 4:8] == new_grid[i][j])) > 1) |  # top center center subsection
+                        ((numpy.sum(new_grid[6:9, 4:8] == new_grid[i][j])) > 1) |  # bottom center center subsection
+                        ((numpy.sum(new_grid[9:12, 4:8] == new_grid[i][j])) > 1) |  # bottom center subsection
+                        ((numpy.sum(new_grid[:3, 8:12] == new_grid[i][j])) > 1) |  # top right subsection
+                        ((numpy.sum(new_grid[3:6, 8:12] == new_grid[i][j])) > 1) |  # top center right subsection
+                        ((numpy.sum(new_grid[6:9, 8:12] == new_grid[i][j])) > 1) |  # bottom center right subsection
+                        ((numpy.sum(new_grid[9:12, 8:12] == new_grid[i][j])) > 1)):  # bottom right subsection
                     new_grid[i][j] = 0
     return new_grid
 
 
 def get_clue_positions():
     """Get a list of tuples containing the coords of every clue number."""
-    return [(x, y) for x in range(len(starting_grid[0])) for y in range(len(starting_grid[0])) if starting_grid[x][y] != 0]
+    return [(x, y) for x in range(len(starting_grid[0])) for y in range(len(starting_grid[0])) if
+            starting_grid[x][y] != 0]
 
 
 def populate_board(g, new_num=None):
