@@ -76,9 +76,6 @@ def main():
     pygame.init()
     pygame.display.set_caption("Sudoku")
 
-    #    base_font = pygame.font.Font(None, 32)
-    #    user_text = ''
-
     # initialize starting grid
     grid_9x9 = numpy.zeros((9, 9), numpy.int8)
     # populate starting grid
@@ -100,13 +97,11 @@ def main():
         for event in event_list:
             if event.type == pygame.QUIT:
                 run = False
-        #            if event.type == pygame.KEYDOWN:
-        #                user_text += event.unicode
 
         # checks if boxes are highlighted
         selected_option_grid = list1.update(event_list)
         selected_option_algo = list2.update(event_list)
-        if selected_option_grid <= 0:
+        if selected_option_grid >= 0:
             print("Grid Option: ", selected_option_grid)
 
             # board chosen to be 6x6
@@ -154,8 +149,10 @@ def main():
         # draw buttons and functionality
         if gen_button.draw(win):
             print("Generating Puzzle...")
-            '''
-            if (len(dataInputCol1.text) > 0 or len(dataInputCol2.text) > 0 or len(dataInputCol3.text) > 0 or len(dataInputCol4.text) > 0 or len(dataInputCol5.text) > 0 or len(dataInputCol6.text) > 0) or len(dataInputCol7.text) > 0 or len(dataInputCol8.text) > 0 or len(dataInputCol9.text) > 0:
+
+            if (len(dataInputCol1.text) > 0 or len(dataInputCol2.text) > 0 or len(dataInputCol3.text) > 0 or len(
+                    dataInputCol4.text) > 0 or len(dataInputCol5.text) > 0 or len(dataInputCol6.text) > 0) or len(
+                    dataInputCol7.text) > 0 or len(dataInputCol8.text) > 0 or len(dataInputCol9.text) > 0:
                 value_array = []
                 raw_lists = []
                 raw_lists.append(dataInputCol1)
@@ -168,7 +165,7 @@ def main():
                 raw_lists.append(dataInputCol8)
                 raw_lists.append(dataInputCol9)
                 for raw_list in raw_lists:
-                    if len(raw_list.text) < 25 or len(raw_list.text):
+                    if len(raw_list.text) < 25 or len(raw_list.text) > 25:
                         raw_list.text = "0, 0, 0, 0, 0, 0, 0, 0, 0"
 
                 for raw_list in raw_lists:
@@ -177,8 +174,6 @@ def main():
                         value = int(single_item)
                         value_array.append(value)
             print(value_array)
-            '''
-
 
         if sol_button.draw(win):
             print('Solving Puzzle...')
@@ -449,6 +444,10 @@ def main():
 
         pygame.display.flip()
 
+    #        if current_grid == 6:
+    #            field1group.update(event_list)
+    #            field1group.draw(win)
+
     pygame.quit()
     exit()
 
@@ -569,50 +568,49 @@ def populate_grid(grid):
                 new_grid[i][j] = random.randint(0, len(grid))
                 # if the filled in non-zero number appears twice in the same row or column, remove most recent placement
                 if (((numpy.sum(new_grid[i, :] == new_grid[i][j]) > 1) |
-                     (numpy.sum(new_grid[:, j] == new_grid[i][j]) > 1)) &
+                        (numpy.sum(new_grid[:, j] == new_grid[i][j]) > 1)) &
                         (new_grid[i][j] != 0)):
                     new_grid[i][j] = 0
             # clear duplicates in the same subsection
             if len(grid) == 9:  # 9x9 grid, 3x3 subsections
                 if (((numpy.sum(new_grid[:3, :3] == new_grid[i][j])) > 1) |  # top left subsection
-                        ((numpy.sum(new_grid[3:6, :3] == new_grid[i][j])) > 1) |  # center left sub-section
-                        ((numpy.sum(new_grid[6:9, :3] == new_grid[i][j])) > 1) |  # bottom left subsection
-                        ((numpy.sum(new_grid[:3, 3:6] == new_grid[i][j])) > 1) |  # top center subsection
-                        ((numpy.sum(new_grid[3:6, 3:6] == new_grid[i][j])) > 1) |  # center center subsection
-                        ((numpy.sum(new_grid[6:9, 3:6] == new_grid[i][j])) > 1) |  # bottom center subsection
-                        ((numpy.sum(new_grid[:3, 6:9] == new_grid[i][j])) > 1) |  # top right subsection
-                        ((numpy.sum(new_grid[3:6, 6:9] == new_grid[i][j])) > 1) |  # center right subsection
-                        ((numpy.sum(new_grid[6:9, 6:9] == new_grid[i][j])) > 1)):  # bottom right subsection
+                   ((numpy.sum(new_grid[3:6, :3] == new_grid[i][j])) > 1) |  # center left sub-section
+                   ((numpy.sum(new_grid[6:9, :3] == new_grid[i][j])) > 1) |  # bottom left subsection
+                   ((numpy.sum(new_grid[:3, 3:6] == new_grid[i][j])) > 1) |  # top center subsection
+                   ((numpy.sum(new_grid[3:6, 3:6] == new_grid[i][j])) > 1) |  # center center subsection
+                   ((numpy.sum(new_grid[6:9, 3:6] == new_grid[i][j])) > 1) |  # bottom center subsection
+                   ((numpy.sum(new_grid[:3, 6:9] == new_grid[i][j])) > 1) |  # top right subsection
+                   ((numpy.sum(new_grid[3:6, 6:9] == new_grid[i][j])) > 1) |  # center right subsection
+                   ((numpy.sum(new_grid[6:9, 6:9] == new_grid[i][j])) > 1)):  # bottom right subsection
                     new_grid[i][j] = 0
             if len(grid) == 6:  # 6x6 grid, 3x2 subsections
                 if (((numpy.sum(new_grid[:2, :2] == new_grid[i][j])) > 1) |  # top left subsection
-                        ((numpy.sum(new_grid[2:4, :2] == new_grid[i][j])) > 1) |  # center left subsection
-                        ((numpy.sum(new_grid[4:6, :2] == new_grid[i][j])) > 1) |  # bottom left subsection
-                        ((numpy.sum(new_grid[:2, 2:4] == new_grid[i][j])) > 1) |  # top right subsection
-                        ((numpy.sum(new_grid[2:4, 2:4] == new_grid[i][j])) > 1) |  # center right subsection
-                        ((numpy.sum(new_grid[4:6, 2:4] == new_grid[i][j])) > 1)):  # bottom right subsection
+                   ((numpy.sum(new_grid[2:4, :2] == new_grid[i][j])) > 1) |  # center left subsection
+                   ((numpy.sum(new_grid[4:6, :2] == new_grid[i][j])) > 1) |  # bottom left subsection
+                   ((numpy.sum(new_grid[:2, 2:4] == new_grid[i][j])) > 1) |  # top right subsection
+                   ((numpy.sum(new_grid[2:4, 2:4] == new_grid[i][j])) > 1) |  # center right subsection
+                   ((numpy.sum(new_grid[4:6, 2:4] == new_grid[i][j])) > 1)):  # bottom right subsection
                     new_grid[i][j] = 0
             if len(grid) == 12:  # 12x12 grid, 4x3 subsections
                 if (((numpy.sum(new_grid[:3, :4] == new_grid[i][j])) > 1) |  # top left subsection
-                        ((numpy.sum(new_grid[3:6, :4] == new_grid[i][j])) > 1) |  # top center left subsection
-                        ((numpy.sum(new_grid[6:9, :4] == new_grid[i][j])) > 1) |  # bottom center left subsection
-                        ((numpy.sum(new_grid[9:12, :4] == new_grid[i][j])) > 1) |  # bottom left subsection
-                        ((numpy.sum(new_grid[:3, 4:8] == new_grid[i][j])) > 1) |  # top center subsection
-                        ((numpy.sum(new_grid[3:6, 4:8] == new_grid[i][j])) > 1) |  # top center center subsection
-                        ((numpy.sum(new_grid[6:9, 4:8] == new_grid[i][j])) > 1) |  # bottom center center subsection
-                        ((numpy.sum(new_grid[9:12, 4:8] == new_grid[i][j])) > 1) |  # bottom center subsection
-                        ((numpy.sum(new_grid[:3, 8:12] == new_grid[i][j])) > 1) |  # top right subsection
-                        ((numpy.sum(new_grid[3:6, 8:12] == new_grid[i][j])) > 1) |  # top center right subsection
-                        ((numpy.sum(new_grid[6:9, 8:12] == new_grid[i][j])) > 1) |  # bottom center right subsection
-                        ((numpy.sum(new_grid[9:12, 8:12] == new_grid[i][j])) > 1)):  # bottom right subsection
+                   ((numpy.sum(new_grid[3:6, :4] == new_grid[i][j])) > 1) |  # top center left subsection
+                   ((numpy.sum(new_grid[6:9, :4] == new_grid[i][j])) > 1) |  # bottom center left subsection
+                   ((numpy.sum(new_grid[9:12, :4] == new_grid[i][j])) > 1) |  # bottom left subsection
+                   ((numpy.sum(new_grid[:3, 4:8] == new_grid[i][j])) > 1) |  # top center subsection
+                   ((numpy.sum(new_grid[3:6, 4:8] == new_grid[i][j])) > 1) |  # top center center subsection
+                   ((numpy.sum(new_grid[6:9, 4:8] == new_grid[i][j])) > 1) |  # bottom center center subsection
+                   ((numpy.sum(new_grid[9:12, 4:8] == new_grid[i][j])) > 1) |  # bottom center subsection
+                   ((numpy.sum(new_grid[:3, 8:12] == new_grid[i][j])) > 1) |  # top right subsection
+                   ((numpy.sum(new_grid[3:6, 8:12] == new_grid[i][j])) > 1) |  # top center right subsection
+                   ((numpy.sum(new_grid[6:9, 8:12] == new_grid[i][j])) > 1) |  # bottom center right subsection
+                   ((numpy.sum(new_grid[9:12, 8:12] == new_grid[i][j])) > 1)):  # bottom right subsection
                     new_grid[i][j] = 0
     return new_grid
 
 
 def get_clue_positions():
     """Get a list of tuples containing the coords of every clue number."""
-    return [(x, y) for x in range(len(starting_grid[0])) for y in range(len(starting_grid[0])) if
-            starting_grid[x][y] != 0]
+    return [(x, y) for x in range(len(starting_grid[0])) for y in range(len(starting_grid[0])) if starting_grid[x][y] != 0]
 
 
 def populate_board(g, new_num=None):
