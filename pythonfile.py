@@ -24,12 +24,29 @@ win.fill(background_color)
 gen_button_img = pygame.image.load('resources/button_generate_updated.png').convert_alpha()
 sol_Button_img = pygame.image.load('resources/button_solve_updated.png').convert_alpha()
 stp_Button_img = pygame.image.load('resources/button_step.png').convert_alpha()
+ac_Button_img = pygame.image.load('resources/button_clear-all.png').convert_alpha()
+x_Button_img = pygame.image.load('resources/button_x.png').convert_alpha()
 
 # create button instances
 
 gen_button = Button(100, 770, gen_button_img, 1)
 sol_button = Button(100, 825, sol_Button_img, 1)
 stp_button = Button(355, 825, stp_Button_img, 1)
+all_clear_button1 = Button(655, 800, ac_Button_img, 1)
+all_clear_button2 = Button(655, 710, ac_Button_img, 1)
+all_clear_button3 = Button(655, 890, ac_Button_img, 1)
+single_clear1 = Button(913, 523, x_Button_img, 1)
+single_clear2 = Button(913, 553, x_Button_img, 1)
+single_clear3 = Button(913, 583, x_Button_img, 1)
+single_clear4 = Button(913, 613, x_Button_img, 1)
+single_clear5 = Button(913, 643, x_Button_img, 1)
+single_clear6 = Button(913, 673, x_Button_img, 1)
+single_clear7 = Button(913, 703, x_Button_img, 1)
+single_clear8 = Button(913, 733, x_Button_img, 1)
+single_clear9 = Button(913, 763, x_Button_img, 1)
+single_clear10 = Button(913, 793, x_Button_img, 1)
+single_clear11 = Button(913, 823, x_Button_img, 1)
+single_clear12 = Button(913, 853, x_Button_img, 1)
 
 # create option box instances
 list1 = OptionBox(700, 400, 160, 40, (150, 150, 150), (100, 200, 255), pygame.font.SysFont('Comic Sans MS', 30),
@@ -87,7 +104,7 @@ def main():
     # sets up the starting board
     board(win, starting_grid)
     populate_board(starting_grid)
-    grid_check = -1
+    grid_check = 0
 
     # game loop
     run = True
@@ -150,30 +167,86 @@ def main():
         if gen_button.draw(win):
             print("Generating Puzzle...")
 
-            if (len(dataInputCol1.text) > 0 or len(dataInputCol2.text) > 0 or len(dataInputCol3.text) > 0 or len(
-                    dataInputCol4.text) > 0 or len(dataInputCol5.text) > 0 or len(dataInputCol6.text) > 0) or len(
-                    dataInputCol7.text) > 0 or len(dataInputCol8.text) > 0 or len(dataInputCol9.text) > 0:
-                value_array = []
-                raw_lists = []
-                raw_lists.append(dataInputCol1)
-                raw_lists.append(dataInputCol2)
-                raw_lists.append(dataInputCol3)
-                raw_lists.append(dataInputCol4)
-                raw_lists.append(dataInputCol5)
-                raw_lists.append(dataInputCol6)
-                raw_lists.append(dataInputCol7)
-                raw_lists.append(dataInputCol8)
-                raw_lists.append(dataInputCol9)
-                for raw_list in raw_lists:
-                    if len(raw_list.text) < 25 or len(raw_list.text) > 25:
-                        raw_list.text = "0, 0, 0, 0, 0, 0, 0, 0, 0"
+            if grid_check == 0:
+                if len(dataInputCol1.text) > 0 or len(dataInputCol2.text) > 0 or len(dataInputCol3.text) > 0 or len(
+                        dataInputCol4.text) > 0 or len(dataInputCol5.text) > 0 or len(dataInputCol6.text) > 0 or len(
+                        dataInputCol7.text) > 0 or len(dataInputCol8.text) > 0 or len(dataInputCol9.text) > 0:
+                    value_array = []
+                    raw_lists = []
+                    raw_lists.append(dataInputCol1)
+                    raw_lists.append(dataInputCol2)
+                    raw_lists.append(dataInputCol3)
+                    raw_lists.append(dataInputCol4)
+                    raw_lists.append(dataInputCol5)
+                    raw_lists.append(dataInputCol6)
+                    raw_lists.append(dataInputCol7)
+                    raw_lists.append(dataInputCol8)
+                    raw_lists.append(dataInputCol9)
+                    for raw_list in raw_lists:
+                        if len(raw_list.text) < 25 or len(raw_list.text) > 25:
+                            raw_list.text = "0, 0, 0, 0, 0, 0, 0, 0, 0"
 
-                for raw_list in raw_lists:
-                    split_list = raw_list.text.split(", ")
-                    for single_item in split_list:
-                        value = int(single_item)
-                        value_array.append(value)
-            print(value_array)
+                    for raw_list in raw_lists:
+                        split_list = raw_list.text.split(", ")
+                        for single_item in split_list:
+                            value = int(single_item)
+                            value_array.append(value)
+                    print(value_array)
+                    print(grid_check)
+
+            elif grid_check == 1:
+                if len(dataInputCol1.text) > 0 or len(dataInputCol2.text) > 0 or len(dataInputCol3.text) > 0 or len(
+                        dataInputCol4.text) > 0 or len(dataInputCol5.text) > 0 or len(dataInputCol6.text) > 0:
+                    value_array = []
+                    raw_lists = []
+                    raw_lists.append(dataInputCol1)
+                    raw_lists.append(dataInputCol2)
+                    raw_lists.append(dataInputCol3)
+                    raw_lists.append(dataInputCol4)
+                    raw_lists.append(dataInputCol5)
+                    raw_lists.append(dataInputCol6)
+                    for raw_list in raw_lists:
+                        if len(raw_list.text) < 16 or len(raw_list.text) > 16:
+                            raw_list.text = "0, 0, 0, 0, 0, 0"
+
+                    for raw_list in raw_lists:
+                        split_list = raw_list.text.split(", ")
+                        for single_item in split_list:
+                            value = int(single_item)
+                            value_array.append(value)
+                    print(value_array)
+                    print(grid_check)
+
+            elif grid_check == 2:
+                if len(dataInputCol1.text) > 0 or len(dataInputCol2.text) > 0 or len(dataInputCol3.text) > 0 or len(
+                        dataInputCol4.text) > 0 or len(dataInputCol5.text) > 0 or len(dataInputCol6.text) > 0 or len(
+                        dataInputCol7.text) > 0 or len(dataInputCol8.text) > 0 or len(dataInputCol9.text) > 0 or len(
+                        dataInputCol10.text) > 0 or len(dataInputCol11.text) > 0 or len(dataInputCol12.text) > 0:
+                    value_array = []
+                    raw_lists = []
+                    raw_lists.append(dataInputCol1)
+                    raw_lists.append(dataInputCol2)
+                    raw_lists.append(dataInputCol3)
+                    raw_lists.append(dataInputCol4)
+                    raw_lists.append(dataInputCol5)
+                    raw_lists.append(dataInputCol6)
+                    raw_lists.append(dataInputCol7)
+                    raw_lists.append(dataInputCol8)
+                    raw_lists.append(dataInputCol9)
+                    raw_lists.append(dataInputCol10)
+                    raw_lists.append(dataInputCol11)
+                    raw_lists.append(dataInputCol12)
+                    for raw_list in raw_lists:
+                        if len(raw_list.text) < 37 or len(raw_list.text) > 37:
+                            raw_list.text = "0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0"
+
+                    for raw_list in raw_lists:
+                        split_list = raw_list.text.split(", ")
+                        for single_item in split_list:
+                            value = int(single_item)
+                            value_array.append(value)
+                    print(value_array)
+                    print(grid_check)
 
         if sol_button.draw(win):
             print('Solving Puzzle...')
@@ -194,6 +267,88 @@ def main():
                 else:
                     populate_board(g)
 
+        if grid_check == 0:
+            if all_clear_button1.draw(win):
+                dataInputCol1.text = ""
+                dataInputCol2.text = ""
+                dataInputCol3.text = ""
+                dataInputCol4.text = ""
+                dataInputCol5.text = ""
+                dataInputCol6.text = ""
+                dataInputCol7.text = ""
+                dataInputCol8.text = ""
+                dataInputCol9.text = ""
+        elif grid_check == 1:
+            if all_clear_button2.draw(win):
+                dataInputCol1.text = ""
+                dataInputCol2.text = ""
+                dataInputCol3.text = ""
+                dataInputCol4.text = ""
+                dataInputCol5.text = ""
+                dataInputCol6.text = ""
+        elif grid_check == 2:
+            if all_clear_button3.draw(win):
+                dataInputCol1.text = ""
+                dataInputCol2.text = ""
+                dataInputCol3.text = ""
+                dataInputCol4.text = ""
+                dataInputCol5.text = ""
+                dataInputCol6.text = ""
+                dataInputCol7.text = ""
+                dataInputCol8.text = ""
+                dataInputCol9.text = ""
+                dataInputCol10.text = ""
+                dataInputCol11.text = ""
+                dataInputCol12.text = ""
+
+
+        if single_clear1.draw(win):
+            dataInputCol1.text = ""
+
+        if (single_clear2.draw(win)):
+            dataInputCol2.text = ""
+
+        if single_clear3.draw(win):
+            dataInputCol3.text = ""
+
+        if single_clear4.draw(win):
+            dataInputCol4.text = ""
+
+        if single_clear5.draw(win):
+            dataInputCol5.text = ""
+
+        if single_clear6.draw(win):
+            dataInputCol6.text = ""
+
+        if grid_check == 0:
+            if single_clear7.draw(win):
+                dataInputCol7.text = ""
+
+            if single_clear8.draw(win):
+                dataInputCol8.text = ""
+
+            if single_clear9.draw(win):
+                dataInputCol9.text = ""
+
+        elif grid_check == 2:
+            if single_clear7.draw(win):
+                dataInputCol7.text = ""
+
+            if single_clear8.draw(win):
+                dataInputCol8.text = ""
+
+            if single_clear9.draw(win):
+                dataInputCol9.text = ""
+
+            if single_clear10.draw(win):
+                dataInputCol10.text = ""
+
+            if single_clear11.draw(win):
+                dataInputCol11.text = ""
+
+            if single_clear12.draw(win):
+                dataInputCol12.text = ""
+
         # draws comments
         title.draw(win, "The Sudoku Solver")
         names1.draw(win, "Joseph Baliestiero, Cierra O'Grady,")
@@ -208,7 +363,12 @@ def main():
         dataInputTag.draw(win, "Input String of Data w/ Commas in Between")
 
         # draws and updates data input text file
-        pygame.draw.rect(win, (251, 247, 245), pygame.Rect(655, 520, 400, 500))
+        if grid_check == 0:
+            pygame.draw.rect(win, (251, 247, 245), pygame.Rect(655, 520, 256, 270))
+        elif grid_check == 1:
+            pygame.draw.rect(win, (251, 247, 245), pygame.Rect(655, 520, 256, 180))
+        elif grid_check == 2:
+            pygame.draw.rect(win, (251, 247, 245), pygame.Rect(655, 520, 256, 360))
 
         if grid_check == 0:
             # checks number limit for every single text input
@@ -568,49 +728,50 @@ def populate_grid(grid):
                 new_grid[i][j] = random.randint(0, len(grid))
                 # if the filled in non-zero number appears twice in the same row or column, remove most recent placement
                 if (((numpy.sum(new_grid[i, :] == new_grid[i][j]) > 1) |
-                        (numpy.sum(new_grid[:, j] == new_grid[i][j]) > 1)) &
+                     (numpy.sum(new_grid[:, j] == new_grid[i][j]) > 1)) &
                         (new_grid[i][j] != 0)):
                     new_grid[i][j] = 0
             # clear duplicates in the same subsection
             if len(grid) == 9:  # 9x9 grid, 3x3 subsections
                 if (((numpy.sum(new_grid[:3, :3] == new_grid[i][j])) > 1) |  # top left subsection
-                   ((numpy.sum(new_grid[3:6, :3] == new_grid[i][j])) > 1) |  # center left sub-section
-                   ((numpy.sum(new_grid[6:9, :3] == new_grid[i][j])) > 1) |  # bottom left subsection
-                   ((numpy.sum(new_grid[:3, 3:6] == new_grid[i][j])) > 1) |  # top center subsection
-                   ((numpy.sum(new_grid[3:6, 3:6] == new_grid[i][j])) > 1) |  # center center subsection
-                   ((numpy.sum(new_grid[6:9, 3:6] == new_grid[i][j])) > 1) |  # bottom center subsection
-                   ((numpy.sum(new_grid[:3, 6:9] == new_grid[i][j])) > 1) |  # top right subsection
-                   ((numpy.sum(new_grid[3:6, 6:9] == new_grid[i][j])) > 1) |  # center right subsection
-                   ((numpy.sum(new_grid[6:9, 6:9] == new_grid[i][j])) > 1)):  # bottom right subsection
+                        ((numpy.sum(new_grid[3:6, :3] == new_grid[i][j])) > 1) |  # center left sub-section
+                        ((numpy.sum(new_grid[6:9, :3] == new_grid[i][j])) > 1) |  # bottom left subsection
+                        ((numpy.sum(new_grid[:3, 3:6] == new_grid[i][j])) > 1) |  # top center subsection
+                        ((numpy.sum(new_grid[3:6, 3:6] == new_grid[i][j])) > 1) |  # center center subsection
+                        ((numpy.sum(new_grid[6:9, 3:6] == new_grid[i][j])) > 1) |  # bottom center subsection
+                        ((numpy.sum(new_grid[:3, 6:9] == new_grid[i][j])) > 1) |  # top right subsection
+                        ((numpy.sum(new_grid[3:6, 6:9] == new_grid[i][j])) > 1) |  # center right subsection
+                        ((numpy.sum(new_grid[6:9, 6:9] == new_grid[i][j])) > 1)):  # bottom right subsection
                     new_grid[i][j] = 0
             if len(grid) == 6:  # 6x6 grid, 3x2 subsections
                 if (((numpy.sum(new_grid[:2, :2] == new_grid[i][j])) > 1) |  # top left subsection
-                   ((numpy.sum(new_grid[2:4, :2] == new_grid[i][j])) > 1) |  # center left subsection
-                   ((numpy.sum(new_grid[4:6, :2] == new_grid[i][j])) > 1) |  # bottom left subsection
-                   ((numpy.sum(new_grid[:2, 2:4] == new_grid[i][j])) > 1) |  # top right subsection
-                   ((numpy.sum(new_grid[2:4, 2:4] == new_grid[i][j])) > 1) |  # center right subsection
-                   ((numpy.sum(new_grid[4:6, 2:4] == new_grid[i][j])) > 1)):  # bottom right subsection
+                        ((numpy.sum(new_grid[2:4, :2] == new_grid[i][j])) > 1) |  # center left subsection
+                        ((numpy.sum(new_grid[4:6, :2] == new_grid[i][j])) > 1) |  # bottom left subsection
+                        ((numpy.sum(new_grid[:2, 2:4] == new_grid[i][j])) > 1) |  # top right subsection
+                        ((numpy.sum(new_grid[2:4, 2:4] == new_grid[i][j])) > 1) |  # center right subsection
+                        ((numpy.sum(new_grid[4:6, 2:4] == new_grid[i][j])) > 1)):  # bottom right subsection
                     new_grid[i][j] = 0
             if len(grid) == 12:  # 12x12 grid, 4x3 subsections
                 if (((numpy.sum(new_grid[:3, :4] == new_grid[i][j])) > 1) |  # top left subsection
-                   ((numpy.sum(new_grid[3:6, :4] == new_grid[i][j])) > 1) |  # top center left subsection
-                   ((numpy.sum(new_grid[6:9, :4] == new_grid[i][j])) > 1) |  # bottom center left subsection
-                   ((numpy.sum(new_grid[9:12, :4] == new_grid[i][j])) > 1) |  # bottom left subsection
-                   ((numpy.sum(new_grid[:3, 4:8] == new_grid[i][j])) > 1) |  # top center subsection
-                   ((numpy.sum(new_grid[3:6, 4:8] == new_grid[i][j])) > 1) |  # top center center subsection
-                   ((numpy.sum(new_grid[6:9, 4:8] == new_grid[i][j])) > 1) |  # bottom center center subsection
-                   ((numpy.sum(new_grid[9:12, 4:8] == new_grid[i][j])) > 1) |  # bottom center subsection
-                   ((numpy.sum(new_grid[:3, 8:12] == new_grid[i][j])) > 1) |  # top right subsection
-                   ((numpy.sum(new_grid[3:6, 8:12] == new_grid[i][j])) > 1) |  # top center right subsection
-                   ((numpy.sum(new_grid[6:9, 8:12] == new_grid[i][j])) > 1) |  # bottom center right subsection
-                   ((numpy.sum(new_grid[9:12, 8:12] == new_grid[i][j])) > 1)):  # bottom right subsection
+                        ((numpy.sum(new_grid[3:6, :4] == new_grid[i][j])) > 1) |  # top center left subsection
+                        ((numpy.sum(new_grid[6:9, :4] == new_grid[i][j])) > 1) |  # bottom center left subsection
+                        ((numpy.sum(new_grid[9:12, :4] == new_grid[i][j])) > 1) |  # bottom left subsection
+                        ((numpy.sum(new_grid[:3, 4:8] == new_grid[i][j])) > 1) |  # top center subsection
+                        ((numpy.sum(new_grid[3:6, 4:8] == new_grid[i][j])) > 1) |  # top center center subsection
+                        ((numpy.sum(new_grid[6:9, 4:8] == new_grid[i][j])) > 1) |  # bottom center center subsection
+                        ((numpy.sum(new_grid[9:12, 4:8] == new_grid[i][j])) > 1) |  # bottom center subsection
+                        ((numpy.sum(new_grid[:3, 8:12] == new_grid[i][j])) > 1) |  # top right subsection
+                        ((numpy.sum(new_grid[3:6, 8:12] == new_grid[i][j])) > 1) |  # top center right subsection
+                        ((numpy.sum(new_grid[6:9, 8:12] == new_grid[i][j])) > 1) |  # bottom center right subsection
+                        ((numpy.sum(new_grid[9:12, 8:12] == new_grid[i][j])) > 1)):  # bottom right subsection
                     new_grid[i][j] = 0
     return new_grid
 
 
 def get_clue_positions():
     """Get a list of tuples containing the coords of every clue number."""
-    return [(x, y) for x in range(len(starting_grid[0])) for y in range(len(starting_grid[0])) if starting_grid[x][y] != 0]
+    return [(x, y) for x in range(len(starting_grid[0])) for y in range(len(starting_grid[0])) if
+            starting_grid[x][y] != 0]
 
 
 def populate_board(g, new_num=None):
