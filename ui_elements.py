@@ -86,8 +86,10 @@ class TextField(pygame.sprite.Sprite):
                         self.text = self.text[0:-1]
                     elif event.key == pygame.K_DELETE:   # move back one space
                         self.text = self.text[0:-1]
+                        self.color = (0, 0, 0)  # resets color to black once deleting
                     else:   # type whatever key is pressed
                         self.text += event.unicode
+                        self.color = (0, 0, 0)
                 self.draw()  # draw the key
 
             if self.limiter == True:
@@ -97,8 +99,10 @@ class TextField(pygame.sprite.Sprite):
                         self.active = False
                     elif event.key == pygame.K_BACKSPACE:  # move back one space
                         self.text = self.text[0:-1]
+                        self.color = (0, 0, 0) # resets color to black once deleting
                     elif event.key == pygame.K_DELETE:  # move back one space
                         self.text = self.text[0:-1]
+                        self.color = (0, 0, 0) # resets color to black once deleting
                 self.draw()  # draw the key
 
 

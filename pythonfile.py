@@ -58,6 +58,12 @@ title = TextComment(50, 40, "Comic Sans MS", (0, 0, 0), 40)
 names1 = TextComment(55, 90, "Comic Sans MS", (0, 0, 0), 20)
 names2 = TextComment(55, 115, "Comic Sans MS", (0, 0, 0), 20)
 dataInputTag = TextComment(655, 500, "Comic Sans MS", (0, 0, 0), 15)
+warning_message1_1 = TextComment(655, 860, "Comic Sans MS", (205, 0, 0), 15)
+warning_message1_2 = TextComment(655, 877, "Comic Sans MS", (205, 0, 0), 15)
+warning_message2_1 = TextComment(655, 760, "Comic Sans MS", (205, 0, 0), 15)
+warning_message2_2 = TextComment(655, 777, "Comic Sans MS", (205, 0, 0), 15)
+warning_message3_1 = TextComment(655, 940, "Comic Sans MS", (205, 0, 0), 15)
+warning_message3_2 = TextComment(655, 955, "Comic Sans MS", (205, 0, 0), 15)
 
 # create text field instances
 dataInputCol1 = TextField(655, 520, 256, pygame.font.SysFont("Comic Sans MS", 15), False)
@@ -184,7 +190,10 @@ def main():
                     raw_lists.append(dataInputCol9)
                     for raw_list in raw_lists:
                         if len(raw_list.text) < 25 or len(raw_list.text) > 25:
+                            raw_list.color = (204, 0, 0)
                             raw_list.text = "0, 0, 0, 0, 0, 0, 0, 0, 0"
+                            warning_message1_1.draw(win, "Warning: All Values Not Completely Filled")
+                            warning_message1_2.draw(win, "Were Replaced By 0s and Highlighted Red")
 
                     for raw_list in raw_lists:
                         split_list = raw_list.text.split(", ")
@@ -207,7 +216,10 @@ def main():
                     raw_lists.append(dataInputCol6)
                     for raw_list in raw_lists:
                         if len(raw_list.text) < 16 or len(raw_list.text) > 16:
+                            raw_list.color = (204, 0, 0)
                             raw_list.text = "0, 0, 0, 0, 0, 0"
+                            warning_message2_1.draw(win, "Warning: All Values Not Completely Filled")
+                            warning_message2_2.draw(win, "Were Replaced By 0s and Highlighted Red")
 
                     for raw_list in raw_lists:
                         split_list = raw_list.text.split(", ")
@@ -238,7 +250,10 @@ def main():
                     raw_lists.append(dataInputCol12)
                     for raw_list in raw_lists:
                         if len(raw_list.text) < 37 or len(raw_list.text) > 37:
+                            raw_list.color = (204, 0, 0)
                             raw_list.text = "0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0"
+                            warning_message3_1.draw(win, "Warning: All Values Not Completely Filled")
+                            warning_message3_2.draw(win, "Were Replaced By 0s and Highlighted Red")
 
                     for raw_list in raw_lists:
                         split_list = raw_list.text.split(", ")
@@ -269,6 +284,8 @@ def main():
 
         if grid_check == 0:
             if all_clear_button1.draw(win):
+                revert_text_colors()
+                pygame.draw.rect(win, (251, 247, 245), pygame.Rect(655, 860, 300, 250))
                 dataInputCol1.text = ""
                 dataInputCol2.text = ""
                 dataInputCol3.text = ""
@@ -280,6 +297,8 @@ def main():
                 dataInputCol9.text = ""
         elif grid_check == 1:
             if all_clear_button2.draw(win):
+                revert_text_colors()
+                pygame.draw.rect(win, (251, 247, 245), pygame.Rect(655, 760, 300, 250))
                 dataInputCol1.text = ""
                 dataInputCol2.text = ""
                 dataInputCol3.text = ""
@@ -288,6 +307,8 @@ def main():
                 dataInputCol6.text = ""
         elif grid_check == 2:
             if all_clear_button3.draw(win):
+                revert_text_colors()
+                pygame.draw.rect(win, (251, 247, 245), pygame.Rect(655, 940, 300, 250))
                 dataInputCol1.text = ""
                 dataInputCol2.text = ""
                 dataInputCol3.text = ""
@@ -303,56 +324,72 @@ def main():
 
 
         if single_clear1.draw(win):
+            dataInputCol1.color = (0, 0, 0)
             dataInputCol1.text = ""
 
         if (single_clear2.draw(win)):
+            dataInputCol2.color = (0, 0, 0)
             dataInputCol2.text = ""
 
         if single_clear3.draw(win):
+            dataInputCol3.color = (0, 0, 0)
             dataInputCol3.text = ""
 
         if single_clear4.draw(win):
+            dataInputCol4.color = (0, 0, 0)
             dataInputCol4.text = ""
 
         if single_clear5.draw(win):
+            dataInputCol5.color = (0, 0, 0)
             dataInputCol5.text = ""
 
         if single_clear6.draw(win):
+            dataInputCol6.color = (0, 0, 0)
             dataInputCol6.text = ""
 
         if grid_check == 0:
             if single_clear7.draw(win):
+                dataInputCol7.color = (0, 0, 0)
                 dataInputCol7.text = ""
 
             if single_clear8.draw(win):
+                dataInputCol8.color = (0, 0, 0)
                 dataInputCol8.text = ""
 
             if single_clear9.draw(win):
+                dataInputCol9.color = (0, 0, 0)
                 dataInputCol9.text = ""
 
         elif grid_check == 2:
             if single_clear7.draw(win):
+                dataInputCol7.color = (0, 0, 0)
                 dataInputCol7.text = ""
 
             if single_clear8.draw(win):
+                dataInputCol8.color = (0, 0, 0)
                 dataInputCol8.text = ""
 
             if single_clear9.draw(win):
+                dataInputCol9.color = (0, 0, 0)
                 dataInputCol9.text = ""
 
             if single_clear10.draw(win):
+                dataInputCol10.color = (0, 0, 0)
                 dataInputCol10.text = ""
 
             if single_clear11.draw(win):
+                dataInputCol11.color = (0, 0, 0)
                 dataInputCol11.text = ""
 
             if single_clear12.draw(win):
+                dataInputCol12.color = (0, 0, 0)
                 dataInputCol12.text = ""
 
         # draws comments
         title.draw(win, "The Sudoku Solver")
         names1.draw(win, "Joseph Baliestiero, Cierra O'Grady,")
         names2.draw(win, "Gibson Phillips, and Andrew Simonini")
+
 
         # draws rectangles to hide the option box options
         pygame.draw.rect(win, (251, 247, 245), pygame.Rect(700, 440, 160, 120))
@@ -794,6 +831,21 @@ def populate_board(g, new_num=None):
 def clear_board():
     win.fill(background_color)
     board(win, starting_grid)
+
+def revert_text_colors():
+    dataInputCol1.color = (0, 0, 0)
+    dataInputCol2.color = (0, 0, 0)
+    dataInputCol3.color = (0, 0, 0)
+    dataInputCol4.color = (0, 0, 0)
+    dataInputCol5.color = (0, 0, 0)
+    dataInputCol6.color = (0, 0, 0)
+    dataInputCol7.color = (0, 0, 0)
+    dataInputCol8.color = (0, 0, 0)
+    dataInputCol9.color = (0, 0, 0)
+    dataInputCol10.color = (0, 0, 0)
+    dataInputCol11.color = (0, 0, 0)
+    dataInputCol12.color = (0, 0, 0)
+
 
 
 # game entry point
