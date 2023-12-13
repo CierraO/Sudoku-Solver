@@ -15,6 +15,8 @@ import numpy as np
 
 import scipy as sp
 
+import copy
+
 
 class Problem:
     """The abstract class for a formal problem. You should subclass
@@ -300,7 +302,6 @@ def simplex_search(problem):
         result = sp.optimize.linprog(c=np.ones(729), A_eq=matrix, b_eq=b, bounds=bound_list, integrality=1, method='highs')
         result.x = np.round(result.x)
         output = np.reshape([np.where(row == 1)[0] + 1 for row in np.reshape(result.x, (81, 9))], (9, 9))
-        output = Node(output.tolist())
     elif len(problem.initial) == 6:  # board is 6x6
         matrix = np.zeros((144, 216))
         for i in range(6):  # Inequalities for rows
@@ -328,7 +329,6 @@ def simplex_search(problem):
         result = sp.optimize.linprog(c=np.ones(216), A_eq=matrix, b_eq=b, bounds=bound_list, integrality=1, method='highs')
         result.x = np.round(result.x)
         output = np.reshape([np.where(row == 1)[0] + 1 for row in np.reshape(result.x, (36, 6))], (6, 6))
-        output = Node(output.tolist())
     elif len(problem.initial) == 12:  # board is 12x12
         matrix = np.zeros((576, 1728))
         for i in range(12):  # Inequalities for rows
@@ -356,8 +356,21 @@ def simplex_search(problem):
         result = sp.optimize.linprog(c=np.ones(1728), A_eq=matrix, b_eq=b, bounds=bound_list, integrality=1, method='highs')
         result.x = np.round(result.x)
         output = np.reshape([np.where(row == 1)[0] + 1 for row in np.reshape(result.x, (144, 12))], (12, 12))
-        output = Node(output.tolist())
-    return output
+    # create list of nodes
+    parent = None
+    start_board = copy.deepcopy(problem.initial)
+    start_board_ones = np.where(start_board > 0, 0, 1)
+    board_with_filled_in_values = np.multiply(start_board_ones, output)
+    cur_board = Node(output)
+    for x_value in range(len(start_board_ones)):
+        for y_value in range(len(start_board_ones)):
+            if board_with_filled_in_values[x_value][y_value] > 0:
+                start_board[x_value][y_value] = board_with_filled_in_values[x_value][y_value]
+                for row in range(len(start_board)):
+                    start_board[row] = list(start_board[row])
+                cur_board = Node(list(start_board), parent)
+                parent = copy.deepcopy(cur_board)
+    return cur_board
 
 
 def best_first_graph_search(problem, f, display=False):

@@ -31,11 +31,13 @@ class SudokuPuzzle:
             self.get_solution(algorithm)
         path = self.solution_node.path()
 
+        #if algorithm == 1:
+        #    path.reverse()
+
         if self.step < len(path):
             next_step = path[self.step]
             self.step += 1
             return next_step.state, self.find_blank_square(next_step.parent.state)
-
         return False
 
     def find_blank_square(self, bd=None):

@@ -1,4 +1,5 @@
 import random
+import time
 
 import pygame
 import numpy
@@ -25,12 +26,14 @@ win.fill(background_color)
 gen_button_img = pygame.image.load('resources/button_generate_updated.png').convert_alpha()
 sol_Button_img = pygame.image.load('resources/button_solve_updated.png').convert_alpha()
 stp_Button_img = pygame.image.load('resources/button_step.png').convert_alpha()
+sug_Button_img = pygame.image.load('resources/suggestion_button.png').convert_alpha()
 
 # create button instances
 
 gen_button = Button(100, 770, gen_button_img, 1)
 sol_button = Button(100, 825, sol_Button_img, 1)
 stp_button = Button(355, 825, stp_Button_img, 1)
+sug_button = Button(525, 770, sug_Button_img, 1)
 
 # create option box instances
 list1 = OptionBox(700, 400, 160, 40, (150, 150, 150), (100, 200, 255), pygame.font.SysFont('Comic Sans MS', 30),
@@ -47,6 +50,7 @@ title = TextComment(50, 40, "Comic Sans MS", (0, 0, 0), 40)
 names1 = TextComment(55, 90, "Comic Sans MS", (0, 0, 0), 20)
 names2 = TextComment(55, 115, "Comic Sans MS", (0, 0, 0), 20)
 error_text = TextComment(100, 900, "Comic Sans MS", (255, 0, 0), 20)
+suggested_algorithm_text = TextComment(550, 830, "Comic Sans MS", (0, 0, 255), 20)
 
 
 def main():
@@ -141,19 +145,43 @@ def main():
             except:
                 print("No Possible Solution With This Algorithm")
                 error_text.draw(win, "No Possible Solution With This Algorithm")
-
         if stp_button.draw(win):
-            print("Next Step is...")
-            if puzzle.step == 1:
-                print("CLEARING")
-                clear_board()
-
-            g, new_num = puzzle.step_through(list2.selected)
-            if g:
-                if new_num:
-                    populate_board(g, new_num)
+            try:
+                print("Next Step is...")
+                if puzzle.step == 1:
+                    print("CLEARING")
+                    clear_board()
+                g, new_num = puzzle.step_through(list2.selected)
+                if g:
+                    if new_num:
+                        populate_board(g, new_num)
+                    else:
+                        populate_board(g)
+            except:
+                print("No Possible Solution With This Algorithm")
+                error_text.draw(win, "No Possible Solution With This Algorithm")
+        if sug_button.draw(win):
+            try:
+                # algorithm DFS time
+                start_time_algo0 = time.perf_counter()
+                puzzle.get_solution(0)
+                end_time_algo0 = time.perf_counter()
+                time_algo0 = end_time_algo0 - start_time_algo0
+                # algorithm LP time
+                start_time_algo1 = time.perf_counter()
+                puzzle.get_solution(1)
+                end_time_algo1 = time.perf_counter()
+                time_algo1 = end_time_algo1 - start_time_algo1
+                # comparison
+                if time_algo1 >= time_algo0:
+                    print("LP Algorithm is the Fastest")
+                    suggested_algorithm_text.draw(win, "LP Algorithm is the Fastest")
                 else:
-                    populate_board(g)
+                    print("DFS Algorithm is the Fastest")
+                    suggested_algorithm_text.draw(win, "DFS Algorithm is the Fastest")
+            except:
+                print("No Possible Solutions With Algorithms")
+                suggested_algorithm_text.draw(win, "No Possible Solutions With Algorithms")
 
         # draws comments
         title.draw(win, "The Sudoku Solver")
@@ -362,7 +390,7 @@ def populate_board(g, new_num=None):
 
                 # add to screen with blit
                 if g[i][j] > 9:
-                    win.blit(value, ((j + 0.9) * 50 + 15, (i + 0.75) * 50 + 15 + 100))
+                    win.blit(value, ((j + 0.9) * 50 + 15, (i + 0.75) * 50 + 15 + 100))  # for double digit numbers
                 else:
                     win.blit(value, ((j + 1) * 50 + 15, (i + 0.75) * 50 + 15 + 100))
                 pygame.display.flip()
