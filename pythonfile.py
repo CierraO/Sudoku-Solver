@@ -37,14 +37,22 @@ list1 = OptionBox(700, 400, 160, 40, (150, 150, 150), (100, 200, 255), pygame.fo
                   ["9x9", "6x6", "12x12"])
 list2 = OptionBox(700, 450, 160, 40, (150, 150, 150), (100, 200, 255), pygame.font.SysFont('Comic Sans MS', 25),
                   ["DFS", "LP", "A Star"])
-# create comment instances
+
+# saves previously chosen grid and algorithm options
+previous_grid = 0
+previous_algo = 0
+
+# # create comment instances
 title = TextComment(50, 40, "Comic Sans MS", (0, 0, 0), 40)
 names1 = TextComment(55, 90, "Comic Sans MS", (0, 0, 0), 20)
 names2 = TextComment(55, 115, "Comic Sans MS", (0, 0, 0), 20)
+error_text = TextComment(100, 900, "Comic Sans MS", (255, 0, 0), 20)
 
 
 def main():
     global starting_grid
+    global previous_grid
+    global previous_algo
 
     #   current_grid = 9
     pygame.init()
@@ -84,9 +92,15 @@ def main():
         selected_option_algo = list2.update(event_list)
         if selected_option_grid >= 0:
             print("Grid Option: ", selected_option_grid)
-
+            previous_grid = selected_option_grid
+        if selected_option_algo >= 0:
+            print("Algo Option: ", selected_option_algo)
+            previous_algo = selected_option_grid
+        # draw buttons and functionality
+        if gen_button.draw(win):
+            print("Generating Puzzle...")
             # board chosen to be 6x6
-            if selected_option_grid == 1:
+            if previous_grid == 1:
                 # initialize + populate grid
                 # current_grid = 6
                 grid_6x6 = numpy.zeros((6, 6), numpy.int8)
@@ -95,11 +109,9 @@ def main():
                 puzzle = SudokuPuzzle(starting_grid)
                 win.fill((251, 247, 245))
                 board(win, starting_grid)
-
                 populate_board(starting_grid)
-
             # board chosen to be 9x9
-            elif selected_option_grid == 0:
+            elif previous_grid == 0:
                 # initialize + populate grid
                 # current_grid = 9
                 grid_9x9 = numpy.zeros((9, 9), numpy.int8)
@@ -108,11 +120,9 @@ def main():
                 puzzle = SudokuPuzzle(starting_grid)
                 win.fill((251, 247, 245))
                 board(win, starting_grid)
-
                 populate_board(starting_grid)
-
             # board chosen to be 12x12
-            elif selected_option_grid == 2:
+            elif previous_grid == 2:
                 # initialize + populate grid
                 grid_12x12 = numpy.zeros((12, 12), numpy.int8)
                 grid_12x12 = populate_grid(grid_12x12)
@@ -121,17 +131,16 @@ def main():
                 win.fill((251, 247, 245))
                 board(win, starting_grid)
                 populate_board(starting_grid)
-
-        if selected_option_algo >= 0:
-            print("Algo Option: ", selected_option_algo)
-        # draw buttons and functionality
-        if gen_button.draw(win):
-            print("Generating Puzzle...")
         if sol_button.draw(win):
             print('Solving Puzzle...')
-            if puzzle.get_solution(list2.selected):
-                populate_board(puzzle.get_solution(list2.selected)[0])
-            print("Solved! (If possible)")
+            print(list2.selected)
+            try:
+                if puzzle.get_solution(list2.selected):
+                    populate_board(puzzle.get_solution(list2.selected)[0])
+                    print("Solved!")
+            except:
+                print("No Possible Solution With This Algorithm")
+                error_text.draw(win, "No Possible Solution With This Algorithm")
 
         if stp_button.draw(win):
             print("Next Step is...")
@@ -280,10 +289,17 @@ def board(window, grid_size):
 # fill board with random numbers
 def populate_grid(grid):
     new_grid = numpy.zeros((len(grid), len(grid)), numpy.int8)
+    # generate the limits of how many starting numbers for each board
+    if len(grid) == 9:
+        hint_limit = 17  # limits to 17 starting numbers for 9x9 grid
+    elif len(grid) == 6:
+        hint_limit = 6  # limits to 6 starting numbers for 6x6 grid
+    elif len(grid) == 12:
+        hint_limit = 24  # limits to 24 starting numbers for 12x12 grid
     # fill in board
     for i in range(0, len(grid[0])):
         for j in range(0, len(grid[0])):
-            if random.randint(0, 10) <= 2:  # if number is 0,1,2 -> fill the space with a number
+            if random.randint(0, 100) <= 18 and numpy.count_nonzero(new_grid) < hint_limit - 1:  # if number is 0-18 -> fill the space with a number
                 new_grid[i][j] = random.randint(0, len(grid))
                 # if the filled in non-zero number appears twice in the same row or column, remove most recent placement
                 if (((numpy.sum(new_grid[i, :] == new_grid[i][j]) > 1) |
@@ -336,7 +352,7 @@ def populate_board(g, new_num=None):
     """Populate the sudoku board with numbers from the given grid."""
     for i in range(0, len(g[0])):
         for j in range(0, len(g[0])):
-            if 0 < g[i][j] < 10:
+            if 0 < g[i][j] < 13:
                 if (i, j) in get_clue_positions():
                     value = font.render(str(g[i][j]), True, (0, 0, 0))
                 elif (i, j) == new_num:
@@ -345,7 +361,10 @@ def populate_board(g, new_num=None):
                     value = font.render(str(g[i][j]), True, grid_original_color)
 
                 # add to screen with blit
-                win.blit(value, ((j + 1) * 50 + 15, (i + 0.75) * 50 + 15 + 100))
+                if g[i][j] > 9:
+                    win.blit(value, ((j + 0.9) * 50 + 15, (i + 0.75) * 50 + 15 + 100))
+                else:
+                    win.blit(value, ((j + 1) * 50 + 15, (i + 0.75) * 50 + 15 + 100))
                 pygame.display.flip()
 
 
