@@ -112,6 +112,8 @@ def main():
     populate_board(starting_grid)
     grid_check = 0
 
+    row1_test = make_click_cells(9)
+
     # game loop
     run = True
     while run:
@@ -402,12 +404,10 @@ def main():
         elif grid_check == 2:
             pygame.draw.rect(win, (251, 247, 245), pygame.Rect(655, 520, 256, 360))
 
-        # TODO FIGURE THIS OUT - THIS IS MAKING 1 ROW
-        row1_test = make_click_cells(9)
-
         for group in row1_test:
             group.update(event_list)
             group.draw(win)
+
         # ---------------------------------------------------------------------------------------
         if grid_check == 0:
             # checks number limit for every single text input
@@ -865,7 +865,6 @@ def make_click_cells(n):
         text_fields.append(new_group)
 
     return text_fields
-
 
 # game entry point
 if __name__ == "__main__":
