@@ -415,13 +415,6 @@ def main():
     exit()
 
 
-# helper function
-# fill board with starting game
-def starter():
-    return
-
-
-# helper function
 # draws the basic game board, changes based on size of board requested
 def board(window, grid_size):
     num_columns_rows = len(grid_size)
