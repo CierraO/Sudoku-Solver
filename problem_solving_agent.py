@@ -100,6 +100,70 @@ class SudokuProblem(Problem):
         return 1
 
 
+class SudokuSinglesProblem(SudokuProblem):
+    """The problem of searching for a valid sudoku board using singles techniques."""
+
+    def actions(self, board):
+        """An action is a (square, number) pair.
+        The actions at a board configuration are the valid numbers
+        that can be placed in the next empty square OR in a full house,
+        hidden single, or naked single; as well as the coords of the square
+        represented as a tuple (row, col)."""
+        def create_actions_list(coords, numbers):
+            actions_list = []
+            for number in numbers:
+                actions_list.append((coords, number))
+            return actions_list
+
+        # Check for full house
+        board_len = self.puzzle.length
+        if board_len == 12:
+            rows_per_sq = 3
+            cols_per_sq = int(board_len / 3)
+        else:
+            rows_per_sq = int(board_len / 3)
+            cols_per_sq = 3
+        sq_rows = int(board_len / rows_per_sq)  # number of rows of subsquares
+        sq_cols = int(board_len / cols_per_sq)  # number of cols of subsquares
+
+        for row_of_sq in range(sq_rows):  # for every row of subsquares
+            for col_of_sq in range(sq_cols):  # for every subsquare in that row
+                empty_cells = []
+                # If there is only one empty square in this subsquare, it's a full house
+                for i in range(row_of_sq * rows_per_sq, row_of_sq * rows_per_sq + row_of_sq):
+                    for j in range(col_of_sq * cols_per_sq, col_of_sq * cols_per_sq + col_of_sq):
+                        if board[i][j] == 0:
+                            empty_cells.append((i, j))
+                            if len(empty_cells) > 1:
+                                break
+                    if len(empty_cells) > 1:
+                        break
+
+                if len(empty_cells) == 1:
+                    return create_actions_list(empty_cells[0], self.puzzle.get_valid_numbers(empty_cells[0], board))
+
+        # Check for naked singles
+        for row in range(board_len):
+            for col in range(board_len):
+                # If there is only one possible action in a square, use that
+                if board[row][col] == 0:
+                    valid_nums = self.puzzle.get_valid_numbers((row, col), board)
+                    if len(valid_nums) == 1:
+                        return create_actions_list((row, col), valid_nums)
+
+        # If all else fails, move to next blank square and find all valid numbers
+        return create_actions_list(self.puzzle.find_blank_square(board), super().actions(board))
+
+    def result(self, board, action):
+        """The result of entering a number in the given square
+         is the board with that number inserted into that square."""
+        square = action[0]
+        number = action[1]
+        new_board = [[board[x][y] for y in range(len(board[0]))] for x in range(len(board))]
+        new_board[square[0]][square[1]] = number
+        return new_board
+
+
 # ______________________________________________________________________________
 
 
@@ -231,10 +295,11 @@ class SudokuAgent(SimpleProblemSolvingAgent):
                 goal_node = depth_first_tree_search(self.problem)
             case Algorithms.SIMPLEX.value:
                 goal_node = simplex_search(self.problem)
-            case Algorithms.LAST_BOX.value:
-                raise NotImplementedError
-            case Algorithms.A_STAR.value:
-                raise NotImplementedError
+            case Algorithms.NAKED_SINGLES.value:
+                if type(self.problem) is not SudokuSinglesProblem:
+                    singles_problem = SudokuSinglesProblem(self.problem.puzzle)
+                    self.problem = singles_problem
+                goal_node = depth_first_tree_search(self.problem)
             case _:
                 goal_node = depth_first_tree_search(self.problem)
 
@@ -247,8 +312,7 @@ class SudokuAgent(SimpleProblemSolvingAgent):
 class Algorithms(Enum):
     DEPTH_FIRST = 0
     SIMPLEX = 1
-    LAST_BOX = 2
-    A_STAR = 3
+    NAKED_SINGLES = 2
 
 
 def depth_first_tree_search(problem):
