@@ -73,10 +73,16 @@ class SudokuPuzzle:
                     valid = False
                     break
             # Check if unique in square
-            start_row = (square[0] // 3) * 3
-            start_col = (square[1] // 3) * 3
-            for j in range(3):
-                for k in range(3):
+            if self.length == 12:
+                rows_per_sq = 3
+                cols_per_sq = int(self.length / 3)
+            else:
+                rows_per_sq = int(self.length / 3)
+                cols_per_sq = 3
+            start_row = (square[0] // rows_per_sq) * rows_per_sq
+            start_col = (square[1] // cols_per_sq) * cols_per_sq
+            for j in range(rows_per_sq):
+                for k in range(cols_per_sq):
                     if bd[start_row + j][start_col + k] == i:
                         valid = False
                         break
