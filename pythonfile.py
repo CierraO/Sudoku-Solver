@@ -586,7 +586,8 @@ def get_clue_positions():
 
 def populate_board(g, new_num=None):
     """Populate the sudoku board with numbers from the given grid."""
-    clear_board()
+    if new_num is None:
+        clear_board()
     global clickable_row9, clickable_row12, clickable_row6
     if len(g[0]) == 9: clickable_row9 = make_click_cells(10, g)
     if len(g[0]) == 12: clickable_row12 = make_click_cells(13, g)
