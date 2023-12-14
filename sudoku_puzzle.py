@@ -37,7 +37,12 @@ class SudokuPuzzle:
         if self.step < len(path):
             next_step = path[self.step]
             self.step += 1
-            return next_step.state, self.find_blank_square(next_step.parent.state)
+            if type(next_step.action) is int:
+                new_num = self.find_blank_square(next_step.parent.state)
+            else:
+                new_num = next_step.action[0]
+
+            return next_step.state, new_num
         return False, False
 
     def find_blank_square(self, bd=None):
