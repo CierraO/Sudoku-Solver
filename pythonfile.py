@@ -108,7 +108,7 @@ def main():
     puzzle = SudokuPuzzle(starting_grid)
 
     # sets up the starting board
-    board(win, starting_grid)
+
     populate_board(starting_grid)
     grid_check = 0
 
@@ -136,9 +136,6 @@ def main():
                 grid_6x6 = populate_grid(grid_6x6)
                 starting_grid = grid_6x6
                 puzzle = SudokuPuzzle(starting_grid)
-                win.fill((251, 247, 245))
-                board(win, starting_grid)
-
                 populate_board(starting_grid)
 
             # board chosen to be 9x9
@@ -150,8 +147,6 @@ def main():
                 grid_9x9 = populate_grid(grid_9x9)
                 starting_grid = grid_9x9
                 puzzle = SudokuPuzzle(starting_grid)
-                win.fill((251, 247, 245))
-                board(win, starting_grid)
 
                 populate_board(starting_grid)
 
@@ -163,8 +158,7 @@ def main():
                 grid_12x12 = populate_grid(grid_12x12)
                 starting_grid = grid_12x12
                 puzzle = SudokuPuzzle(starting_grid)
-                win.fill((251, 247, 245))
-                board(win, starting_grid)
+
                 populate_board(starting_grid)
 
         if selected_option_algo >= 0:
@@ -176,7 +170,7 @@ def main():
             if grid_check == 0:
                 if len(dataInputCol1.text) > 0 or len(dataInputCol2.text) > 0 or len(dataInputCol3.text) > 0 or len(
                         dataInputCol4.text) > 0 or len(dataInputCol5.text) > 0 or len(dataInputCol6.text) > 0 or len(
-                        dataInputCol7.text) > 0 or len(dataInputCol8.text) > 0 or len(dataInputCol9.text) > 0:
+                    dataInputCol7.text) > 0 or len(dataInputCol8.text) > 0 or len(dataInputCol9.text) > 0:
                     value_array = []
                     raw_lists = []
                     raw_lists.append(dataInputCol1)
@@ -197,11 +191,12 @@ def main():
 
                     for raw_list in raw_lists:
                         split_list = raw_list.text.split(", ")
-                        for single_item in split_list:
-                            value = int(single_item)
-                            value_array.append(value)
+                        split_list = [int(single_item) for single_item in split_list]
+                        value_array.append(split_list)
                     print(value_array)
                     print(grid_check)
+                    starting_grid = value_array
+                    populate_board(starting_grid)
 
             elif grid_check == 1:
                 if len(dataInputCol1.text) > 0 or len(dataInputCol2.text) > 0 or len(dataInputCol3.text) > 0 or len(
@@ -223,17 +218,18 @@ def main():
 
                     for raw_list in raw_lists:
                         split_list = raw_list.text.split(", ")
-                        for single_item in split_list:
-                            value = int(single_item)
-                            value_array.append(value)
+                        split_list = [int(single_item) for single_item in split_list]
+                        value_array.append(split_list)
                     print(value_array)
                     print(grid_check)
+                    starting_grid = value_array
+                    populate_board(starting_grid)
 
             elif grid_check == 2:
                 if len(dataInputCol1.text) > 0 or len(dataInputCol2.text) > 0 or len(dataInputCol3.text) > 0 or len(
                         dataInputCol4.text) > 0 or len(dataInputCol5.text) > 0 or len(dataInputCol6.text) > 0 or len(
-                        dataInputCol7.text) > 0 or len(dataInputCol8.text) > 0 or len(dataInputCol9.text) > 0 or len(
-                        dataInputCol10.text) > 0 or len(dataInputCol11.text) > 0 or len(dataInputCol12.text) > 0:
+                    dataInputCol7.text) > 0 or len(dataInputCol8.text) > 0 or len(dataInputCol9.text) > 0 or len(
+                    dataInputCol10.text) > 0 or len(dataInputCol11.text) > 0 or len(dataInputCol12.text) > 0:
                     value_array = []
                     raw_lists = []
                     raw_lists.append(dataInputCol1)
@@ -257,11 +253,12 @@ def main():
 
                     for raw_list in raw_lists:
                         split_list = raw_list.text.split(", ")
-                        for single_item in split_list:
-                            value = int(single_item)
-                            value_array.append(value)
+                        split_list = [int(single_item) for single_item in split_list]
+                        value_array.append(split_list)
                     print(value_array)
                     print(grid_check)
+                    starting_grid = value_array
+                    populate_board(starting_grid)
 
         if sol_button.draw(win):
             print('Solving Puzzle...')
@@ -321,7 +318,6 @@ def main():
                 dataInputCol10.text = ""
                 dataInputCol11.text = ""
                 dataInputCol12.text = ""
-
 
         if single_clear1.draw(win):
             dataInputCol1.color = (0, 0, 0)
@@ -390,7 +386,6 @@ def main():
         names1.draw(win, "Joseph Baliestiero, Cierra O'Grady,")
         names2.draw(win, "Gibson Phillips, and Andrew Simonini")
 
-
         # draws rectangles to hide the option box options
         pygame.draw.rect(win, (251, 247, 245), pygame.Rect(700, 440, 160, 120))
         pygame.draw.rect(win, (251, 247, 245), pygame.Rect(700, 490, 160, 120))
@@ -407,8 +402,16 @@ def main():
         elif grid_check == 2:
             pygame.draw.rect(win, (251, 247, 245), pygame.Rect(655, 520, 256, 360))
 
+        # TODO FIGURE THIS OUT - THIS IS MAKING 1 ROW
+        row1_test = make_click_cells(9)
+
+        for group in row1_test:
+            group.update(event_list)
+            group.draw(win)
+        # ---------------------------------------------------------------------------------------
         if grid_check == 0:
             # checks number limit for every single text input
+
             if len(dataInputCol1.text) >= 25:
                 dataInputCol1.limiter = True
             else:
@@ -813,6 +816,8 @@ def get_clue_positions():
 
 def populate_board(g, new_num=None):
     """Populate the sudoku board with numbers from the given grid."""
+    clear_board()
+
     for i in range(0, len(g[0])):
         for j in range(0, len(g[0])):
             if 0 < g[i][j] < 10:
@@ -832,6 +837,7 @@ def clear_board():
     win.fill(background_color)
     board(win, starting_grid)
 
+
 def revert_text_colors():
     dataInputCol1.color = (0, 0, 0)
     dataInputCol2.color = (0, 0, 0)
@@ -846,6 +852,19 @@ def revert_text_colors():
     dataInputCol11.color = (0, 0, 0)
     dataInputCol12.color = (0, 0, 0)
 
+
+# TODO FIGURE THIS OUT - THIS IS MAKING 1 ROW FUNCTION
+
+def make_click_cells(n):
+    text_fields = []
+
+    for i in range(1, n):
+        new_field = TextField(50 * i, 150, 50, pygame.font.SysFont("Comic Sans MS", 30), False)
+        new_group = pygame.sprite.Group(new_field)
+
+        text_fields.append(new_group)
+
+    return text_fields
 
 
 # game entry point
