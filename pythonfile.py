@@ -65,7 +65,7 @@ title = TextComment(50, 40, "Comic Sans MS", (0, 0, 0), 40)
 names1 = TextComment(55, 90, "Comic Sans MS", (0, 0, 0), 20)
 names2 = TextComment(55, 115, "Comic Sans MS", (0, 0, 0), 20)
 error_text = TextComment(100, 900, "Comic Sans MS", (255, 0, 0), 20)
-suggested_algorithm_text = TextComment(660, 360, "Comic Sans MS", (0, 0, 255), 20)
+suggested_algorithm_text = TextComment(635, 360, "Comic Sans MS", (0, 0, 255), 20)
 dataInputTag = TextComment(655, 500, "Comic Sans MS", (0, 0, 0), 15)
 warning_message1_1 = TextComment(655, 860, "Comic Sans MS", (205, 0, 0), 15)
 warning_message1_2 = TextComment(655, 877, "Comic Sans MS", (205, 0, 0), 15)
@@ -452,56 +452,35 @@ def main():
 
 
         if grid_check == 0:
-            for i in range(0, len(clickable_row9)):
+            for single in clickable_row9:
+                single["group"].update(event_list)
+                single["group"].draw(win)
 
-                col_num = i // len(starting_grid[0])
-                row_num = i % len(starting_grid[0])
-
-                if starting_grid[row_num][col_num] == 0:
-                    single = clickable_row9[i]
-
-                    single["group"].update(event_list)
-                    single["group"].draw(win)
-
-                    if len(single["field"].text) >= 1:
-                        single["field"].limiter = True
-                    else:
-                        single["field"].limiter = False
+                if len(single["field"].text) >= 1:
+                    single["field"].limiter = True
+                else:
+                    single["field"].limiter = False
 
 
         elif grid_check == 1:
-            for i in range(0, len(clickable_row6)):
+            for single in clickable_row6:
+                single["group"].update(event_list)
+                single["group"].draw(win)
 
-                col_num = i // len(starting_grid[0])
-                row_num = i % len(starting_grid[0])
-
-                if starting_grid[row_num][col_num] == 0:
-                    single = clickable_row6[i]
-
-                    single["group"].update(event_list)
-                    single["group"].draw(win)
-
-                    if len(single["field"].text) >= 1:
-                        single["field"].limiter = True
-                    else:
-                        single["field"].limiter = False
+                if len(single["field"].text) >= 1:
+                    single["field"].limiter = True
+                else:
+                    single["field"].limiter = False
 
         elif grid_check == 2:
-            for i in range(0, len(clickable_row12)):
+            for single in clickable_row12:
+                single["group"].update(event_list)
+                single["group"].draw(win)
 
-                col_num = i // len(starting_grid[0])
-                row_num = i % len(starting_grid[0])
-
-                if starting_grid[row_num][col_num] == 0:
-                    single = clickable_row12[i]
-
-                    single["group"].update(event_list)
-                    single["group"].draw(win)
-
-                    if len(single["field"].text) >= 2:
-                        single["field"].limiter = True
-                    else:
-                        single["field"].limiter = False
+                if len(single["field"].text) >= 2:
+                    single["field"].limiter = True
+                else:
+                    single["field"].limiter = False
 
         # ---------------------------------------------------------------------------------------
         if grid_check == 0:
@@ -920,9 +899,9 @@ def populate_board(g, new_num=None):
     """Populate the sudoku board with numbers from the given grid."""
     clear_board()
     global clickable_row9, clickable_row12, clickable_row6
-    clickable_row9 = make_click_cells(10)
-    clickable_row12 = make_click_cells(13)
-    clickable_row6 = make_click_cells(7)
+    if len(g[0]) == 9: clickable_row9 = make_click_cells(10, g)
+    if len(g[0]) == 12: clickable_row12 = make_click_cells(13, g)
+    if len(g[0]) == 6: clickable_row6 = make_click_cells(7, g)
 
     for i in range(0, len(g[0])):
         for j in range(0, len(g[0])):
@@ -962,15 +941,18 @@ def revert_text_colors():
     dataInputCol12.color = (0, 0, 0)
 
 
-def make_click_cells(n):
+def make_click_cells(n, g=None):
+    if g is None:
+        g = starting_grid
     text_fields = []
 
     for i in range(1, n):
         for j in range (0, n-1):
-            new_field = TextField(50 * i, 150 + (j * 50), 50, pygame.font.SysFont("Comic Sans MS", 30), False)
-            new_group = pygame.sprite.Group(new_field)
+            if g[j][i-1] == 0:
+                new_field = TextField(50 * i, 150 + (j * 50), 50, pygame.font.SysFont("Comic Sans MS", 30), False)
+                new_group = pygame.sprite.Group(new_field)
 
-            text_fields.append({"group": new_group, "field": new_field})
+                text_fields.append({"group": new_group, "field": new_field})
 
     return text_fields
 
