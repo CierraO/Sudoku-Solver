@@ -1,4 +1,5 @@
 import random
+import time
 
 import pygame
 import numpy
@@ -24,14 +25,15 @@ win.fill(background_color)
 gen_button_img = pygame.image.load('resources/button_generate_updated.png').convert_alpha()
 sol_Button_img = pygame.image.load('resources/button_solve_updated.png').convert_alpha()
 stp_Button_img = pygame.image.load('resources/button_step.png').convert_alpha()
+sug_Button_img = pygame.image.load('resources/suggestion_button.png').convert_alpha()
 ac_Button_img = pygame.image.load('resources/button_clear-all.png').convert_alpha()
 x_Button_img = pygame.image.load('resources/button_x.png').convert_alpha()
 
 # create button instances
-
 gen_button = Button(100, 770, gen_button_img, 1)
 sol_button = Button(100, 825, sol_Button_img, 1)
 stp_button = Button(355, 825, stp_Button_img, 1)
+sug_button = Button(660, 300, sug_Button_img, 1)
 all_clear_button1 = Button(655, 800, ac_Button_img, 1)
 all_clear_button2 = Button(655, 710, ac_Button_img, 1)
 all_clear_button3 = Button(655, 890, ac_Button_img, 1)
@@ -49,14 +51,21 @@ single_clear11 = Button(913, 823, x_Button_img, 1)
 single_clear12 = Button(913, 853, x_Button_img, 1)
 
 # create option box instances
-list1 = OptionBox(700, 400, 160, 40, (150, 150, 150), (100, 200, 255), pygame.font.SysFont('Comic Sans MS', 30),
+list1 = OptionBox(700, 150, 160, 40, (150, 150, 150), (100, 200, 255), pygame.font.SysFont('Comic Sans MS', 30),
                   ["9x9", "6x6", "12x12"])
-list2 = OptionBox(700, 450, 160, 40, (150, 150, 150), (100, 200, 255), pygame.font.SysFont('Comic Sans MS', 25),
-                  ["DFS", "Last Box", "A Star"])
+list2 = OptionBox(700, 200, 160, 40, (150, 150, 150), (100, 200, 255), pygame.font.SysFont('Comic Sans MS', 25),
+                  ["DFS", "LP", "A Star"])
+
+# saves previously chosen grid and algorithm options
+previous_grid = 0
+previous_algo = 0
+
 # create comment instances
 title = TextComment(50, 40, "Comic Sans MS", (0, 0, 0), 40)
 names1 = TextComment(55, 90, "Comic Sans MS", (0, 0, 0), 20)
 names2 = TextComment(55, 115, "Comic Sans MS", (0, 0, 0), 20)
+error_text = TextComment(100, 900, "Comic Sans MS", (255, 0, 0), 20)
+suggested_algorithm_text = TextComment(635, 360, "Comic Sans MS", (0, 0, 255), 20)
 dataInputTag = TextComment(655, 500, "Comic Sans MS", (0, 0, 0), 15)
 warning_message1_1 = TextComment(655, 860, "Comic Sans MS", (205, 0, 0), 15)
 warning_message1_2 = TextComment(655, 877, "Comic Sans MS", (205, 0, 0), 15)
@@ -98,6 +107,8 @@ clickable_row6 = []
 
 def main():
     global starting_grid
+    global previous_grid
+    global previous_algo
 
     #   current_grid = 9
     pygame.init()
@@ -108,7 +119,6 @@ def main():
     # populate starting grid
     grid_9x9 = populate_grid(grid_9x9)
     starting_grid = grid_9x9
-    # Ideally, creating a puzzle object will be handled by a puzzle generator class in the future
     puzzle = SudokuPuzzle(starting_grid)
 
     # sets up the starting board
@@ -130,9 +140,16 @@ def main():
         selected_option_algo = list2.update(event_list)
         if selected_option_grid >= 0:
             print("Grid Option: ", selected_option_grid)
+            previous_grid = selected_option_grid
+        if selected_option_algo >= 0:
+            print("Algo Option: ", selected_option_algo)
+            previous_algo = selected_option_grid
+        # draw buttons and functionality
+        if gen_button.draw(win):
+            print("Generating Puzzle...")
 
             # board chosen to be 6x6
-            if selected_option_grid == 1:
+            if previous_grid == 1:
                 grid_check = 1
                 # initialize + populate grid
                 # current_grid = 6
@@ -141,9 +158,8 @@ def main():
                 starting_grid = grid_6x6
                 puzzle = SudokuPuzzle(starting_grid)
                 populate_board(starting_grid)
-
             # board chosen to be 9x9
-            elif selected_option_grid == 0:
+            elif previous_grid == 0:
                 grid_check = 0
                 # initialize + populate grid
                 # current_grid = 9
@@ -151,11 +167,9 @@ def main():
                 grid_9x9 = populate_grid(grid_9x9)
                 starting_grid = grid_9x9
                 puzzle = SudokuPuzzle(starting_grid)
-
                 populate_board(starting_grid)
-
             # board chosen to be 12x12
-            elif selected_option_grid == 2:
+            elif previous_grid == 2:
                 grid_check = 2
                 # initialize + populate grid
                 grid_12x12 = numpy.zeros((12, 12), numpy.int8)
@@ -266,22 +280,29 @@ def main():
 
         if sol_button.draw(win):
             print('Solving Puzzle...')
-            if puzzle.get_solution():
-                populate_board(puzzle.get_solution()[0])
-            print("Solved! (If possible)")
-
+            print(list2.selected)
+            try:
+                if puzzle.get_solution(list2.selected):
+                    populate_board(puzzle.get_solution(list2.selected)[0])
+                    print("Solved!")
+            except:
+                print("No Possible Solution With This Algorithm")
+                error_text.draw(win, "No Possible Solution With This Algorithm")
         if stp_button.draw(win):
-            print("Next Step is...")
-            if puzzle.step == 1:
-                print("CLEARING")
-                clear_board()
-
-            g, new_num = puzzle.step_through()
-            if g:
-                if new_num:
-                    populate_board(g, new_num)
-                else:
-                    populate_board(g)
+            try:
+                print("Next Step is...")
+                if puzzle.step == 1:
+                    print("CLEARING")
+                    clear_board()
+                g, new_num = puzzle.step_through(list2.selected)
+                if g:
+                    if new_num:
+                        populate_board(g, new_num)
+                    else:
+                        populate_board(g)
+            except:
+                print("No Possible Solution With This Algorithm")
+                error_text.draw(win, "No Possible Solution With This Algorithm")
 
         if grid_check == 0:
             if all_clear_button1.draw(win):
@@ -391,12 +412,35 @@ def main():
         names2.draw(win, "Gibson Phillips, and Andrew Simonini")
 
         # draws rectangles to hide the option box options
-        pygame.draw.rect(win, (251, 247, 245), pygame.Rect(700, 440, 160, 120))
-        pygame.draw.rect(win, (251, 247, 245), pygame.Rect(700, 490, 160, 120))
+        pygame.draw.rect(win, (251, 247, 245), pygame.Rect(700, 190, 160, 120))
+        pygame.draw.rect(win, (251, 247, 245), pygame.Rect(700, 240, 160, 120))
 
         # draws rectangle to make font all cohesive for comment
         pygame.draw.rect(win, (251, 247, 245), pygame.Rect(655, 500, 400, 20))
         dataInputTag.draw(win, "Input String of Data w/ Commas in Between")
+
+        if sug_button.draw(win):
+            try:
+                # algorithm DFS time
+                start_time_algo0 = time.perf_counter()
+                puzzle.get_solution(0)
+                end_time_algo0 = time.perf_counter()
+                time_algo0 = end_time_algo0 - start_time_algo0
+                # algorithm LP time
+                start_time_algo1 = time.perf_counter()
+                puzzle.get_solution(1)
+                end_time_algo1 = time.perf_counter()
+                time_algo1 = end_time_algo1 - start_time_algo1
+                # comparison
+                if time_algo1 >= time_algo0:
+                    print("LP Algorithm is the Fastest")
+                    suggested_algorithm_text.draw(win, "LP Algorithm is the Fastest")
+                else:
+                    print("DFS Algorithm is the Fastest")
+                    suggested_algorithm_text.draw(win, "DFS Algorithm is the Fastest")
+            except:
+                print("No Possible Solutions With Algorithms")
+                suggested_algorithm_text.draw(win, "No Possible Solutions With Algorithms")
 
         # draws and updates data input text file
         if grid_check == 0:
@@ -408,56 +452,35 @@ def main():
 
 
         if grid_check == 0:
-            for i in range(0, len(clickable_row9)):
+            for single in clickable_row9:
+                single["group"].update(event_list)
+                single["group"].draw(win)
 
-                col_num = i // len(starting_grid[0])
-                row_num = i % len(starting_grid[0])
-
-                if starting_grid[row_num][col_num] == 0:
-                    single = clickable_row9[i]
-
-                    single["group"].update(event_list)
-                    single["group"].draw(win)
-
-                    if len(single["field"].text) >= 1:
-                        single["field"].limiter = True
-                    else:
-                        single["field"].limiter = False
+                if len(single["field"].text) >= 1:
+                    single["field"].limiter = True
+                else:
+                    single["field"].limiter = False
 
 
         elif grid_check == 1:
-            for i in range(0, len(clickable_row6)):
+            for single in clickable_row6:
+                single["group"].update(event_list)
+                single["group"].draw(win)
 
-                col_num = i // len(starting_grid[0])
-                row_num = i % len(starting_grid[0])
-
-                if starting_grid[row_num][col_num] == 0:
-                    single = clickable_row6[i]
-
-                    single["group"].update(event_list)
-                    single["group"].draw(win)
-
-                    if len(single["field"].text) >= 1:
-                        single["field"].limiter = True
-                    else:
-                        single["field"].limiter = False
+                if len(single["field"].text) >= 1:
+                    single["field"].limiter = True
+                else:
+                    single["field"].limiter = False
 
         elif grid_check == 2:
-            for i in range(0, len(clickable_row12)):
+            for single in clickable_row12:
+                single["group"].update(event_list)
+                single["group"].draw(win)
 
-                col_num = i // len(starting_grid[0])
-                row_num = i % len(starting_grid[0])
-
-                if starting_grid[row_num][col_num] == 0:
-                    single = clickable_row12[i]
-
-                    single["group"].update(event_list)
-                    single["group"].draw(win)
-
-                    if len(single["field"].text) >= 2:
-                        single["field"].limiter = True
-                    else:
-                        single["field"].limiter = False
+                if len(single["field"].text) >= 2:
+                    single["field"].limiter = True
+                else:
+                    single["field"].limiter = False
 
         # ---------------------------------------------------------------------------------------
         if grid_check == 0:
@@ -812,10 +835,17 @@ def board(window, grid_size):
 # fill board with random numbers
 def populate_grid(grid):
     new_grid = numpy.zeros((len(grid), len(grid)), numpy.int8)
+    # generate the limits of how many starting numbers for each board
+    if len(grid) == 9:
+        hint_limit = 17  # limits to 17 starting numbers for 9x9 grid
+    elif len(grid) == 6:
+        hint_limit = 6  # limits to 6 starting numbers for 6x6 grid
+    elif len(grid) == 12:
+        hint_limit = 24  # limits to 24 starting numbers for 12x12 grid
     # fill in board
     for i in range(0, len(grid[0])):
         for j in range(0, len(grid[0])):
-            if random.randint(0, 10) <= 2:  # if number is 0,1,2 -> fill the space with a number
+            if random.randint(0, 100) <= 18 and numpy.count_nonzero(new_grid) < hint_limit - 1:  # if number is 0-18 -> fill the space with a number
                 new_grid[i][j] = random.randint(0, len(grid))
                 # if the filled in non-zero number appears twice in the same row or column, remove most recent placement
                 if (((numpy.sum(new_grid[i, :] == new_grid[i][j]) > 1) |
@@ -869,13 +899,13 @@ def populate_board(g, new_num=None):
     """Populate the sudoku board with numbers from the given grid."""
     clear_board()
     global clickable_row9, clickable_row12, clickable_row6
-    clickable_row9 = make_click_cells(10)
-    clickable_row12 = make_click_cells(13)
-    clickable_row6 = make_click_cells(7)
+    if len(g[0]) == 9: clickable_row9 = make_click_cells(10, g)
+    if len(g[0]) == 12: clickable_row12 = make_click_cells(13, g)
+    if len(g[0]) == 6: clickable_row6 = make_click_cells(7, g)
 
     for i in range(0, len(g[0])):
         for j in range(0, len(g[0])):
-            if 0 < g[i][j] < 10:
+            if 0 < g[i][j] < 13:
                 if (i, j) in get_clue_positions():
                     value = font.render(str(g[i][j]), True, (0, 0, 0))
                 elif (i, j) == new_num:
@@ -884,7 +914,10 @@ def populate_board(g, new_num=None):
                     value = font.render(str(g[i][j]), True, grid_original_color)
 
                 # add to screen with blit
-                win.blit(value, ((j + 1) * 50 + 15, (i + 0.75) * 50 + 15 + 100))
+                if g[i][j] > 9:
+                    win.blit(value, ((j + 0.9) * 50 + 15, (i + 0.75) * 50 + 15 + 100))  # for double digit numbers
+                else:
+                    win.blit(value, ((j + 1) * 50 + 15, (i + 0.75) * 50 + 15 + 100))
                 pygame.display.flip()
 
 
@@ -908,20 +941,21 @@ def revert_text_colors():
     dataInputCol12.color = (0, 0, 0)
 
 
-# TODO FIGURE THIS OUT - THIS IS MAKING 1 ROW FUNCTION
-
-def make_click_cells(n):
+def make_click_cells(n, g=None):
+    if g is None:
+        g = starting_grid
     text_fields = []
 
     for i in range(1, n):
         for j in range (0, n-1):
-            new_field = TextField(50 * i, 150 + (j * 50), 50, pygame.font.SysFont("Comic Sans MS", 30), False)
-            new_group = pygame.sprite.Group(new_field)
+            if g[j][i-1] == 0:
+                new_field = TextField(50 * i, 150 + (j * 50), 50, pygame.font.SysFont("Comic Sans MS", 30), False)
+                new_group = pygame.sprite.Group(new_field)
 
-            text_fields.append({"group": new_group, "field": new_field})
-
+                text_fields.append({"group": new_group, "field": new_field})
 
     return text_fields
+
 
 # game entry point
 if __name__ == "__main__":

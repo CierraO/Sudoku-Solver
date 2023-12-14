@@ -11,6 +11,12 @@ from enum import Enum
 
 from utils import *
 
+import numpy as np
+
+import scipy as sp
+
+import copy
+
 
 class Problem:
     """The abstract class for a formal problem. You should subclass
@@ -207,6 +213,7 @@ class SimpleProblemSolvingAgent:
 class SudokuAgent(SimpleProblemSolvingAgent):
     """A problem-solving agent to find solutions to sudoku puzzles.
         It is assumed that the given problem is a SudokuProblem."""
+
     def update_state(self, state, percept):
         return percept
 
@@ -220,19 +227,20 @@ class SudokuAgent(SimpleProblemSolvingAgent):
 
 
     def search(self, algorithm):
-       match algorithm:
-           case Algorithms.DEPTH_FIRST:
-               goal_node = depth_first_tree_search(self.problem)
-           case Algorithms.DIJKSTRA:
-               raise NotImplementedError
-           case Algorithms.LAST_BOX:
-               raise NotImplementedError
-           case Algorithms.A_STAR:
-               raise NotImplementedError
-           case _:
-               goal_node = depth_first_tree_search(self.problem)
+        algorithm = Algorithms(algorithm)
+        match algorithm:
+            case Algorithms.DEPTH_FIRST:
+                goal_node = depth_first_tree_search(self.problem)
+            case Algorithms.SIMPLEX:
+                goal_node = simplex_search(self.problem)
+            case Algorithms.LAST_BOX:
+                raise NotImplementedError
+            case Algorithms.A_STAR:
+                raise NotImplementedError
+            case _:
+                goal_node = depth_first_tree_search(self.problem)
 
-       return goal_node
+        return goal_node
 
 
 # ______________________________________________________________________________
@@ -240,7 +248,7 @@ class SudokuAgent(SimpleProblemSolvingAgent):
 
 class Algorithms(Enum):
     DEPTH_FIRST = 0
-    DIJKSTRA = 1
+    SIMPLEX = 1
     LAST_BOX = 2
     A_STAR = 3
 
@@ -262,7 +270,109 @@ def depth_first_tree_search(problem):
             return node
         frontier.extend(node.expand(problem))
     return None
-    
+
+
+def simplex_search(problem):
+    """
+    Uses linear programming to find solution to the Sudoku puzzle
+    """
+    if len(problem.initial) == 9:
+        matrix = np.zeros((324, 729))
+        for i in range(9):  # Inequalities for rows
+            for j in range(9):
+                for k in range(9):
+                    matrix[9 * i + j][k + 9 * j + 81 * i] = 1
+        for i in range(9):  # Inequalities for columns
+            for k in range(9):
+                for j in range(9):
+                    matrix[9 * i + k + 81][k + 9 * j + 81 * i] = 1
+        for j in range(9):  # Inequalities for 3d rows (z-axis)
+            for k in range(9):
+                for i in range(9):
+                    matrix[9 * j + k + 162][k + 9 * j + 81 * i] = 1
+        for n in range(9):
+            for k in range(9):
+                for x in [0, 9, 18, 81, 90, 99, 162, 171, 180]:
+                    matrix[9 * n + k + 243][x + k + 27 * (n % 3) + 243 * (n // 3)] = 1
+        b = np.full(324, 1).transpose()
+        bound_list = [(0, 1) for _ in range(729)]
+        for x in range(9):
+            for y in range(9):
+                if problem.initial[x][y] != 0:
+                    bound_list[9*(9*x + y) + problem.initial[x][y] - 1] = (1, 1)
+        result = sp.optimize.linprog(c=np.ones(729), A_eq=matrix, b_eq=b, bounds=bound_list, integrality=1, method='highs')
+        result.x = np.round(result.x)
+        output = np.reshape([np.where(row == 1)[0] + 1 for row in np.reshape(result.x, (81, 9))], (9, 9))
+    elif len(problem.initial) == 6:  # board is 6x6
+        matrix = np.zeros((144, 216))
+        for i in range(6):  # Inequalities for rows
+            for j in range(6):
+                for k in range(6):
+                    matrix[6 * i + j][k + 6 * j + 36 * i] = 1
+        for i in range(6):  # Inequalities for columns
+            for k in range(6):
+                for j in range(6):
+                    matrix[6 * i + k + 36][k + 6 * j + 36 * i] = 1
+        for j in range(6):  # Inequalities for 3d rows (z-axis)
+            for k in range(6):
+                for i in range(6):
+                    matrix[6 * j + k + 72][k + 6 * j + 36 * i] = 1
+        for n in range(6):
+            for k in range(6):
+                for x in [0, 6, 12, 36, 42, 48]:
+                    matrix[6 * n + k + 108][x + k + 18 * (n % 3) + 108 * (n // 3)] = 1
+        b = np.full(144, 1).transpose()
+        bound_list = [(0, 1) for _ in range(216)]
+        for x in range(6):
+            for y in range(6):
+                if problem.initial[x][y] != 0:
+                    bound_list[6 * (6 * x + y) + problem.initial[x][y] - 1] = (1, 1)
+        result = sp.optimize.linprog(c=np.ones(216), A_eq=matrix, b_eq=b, bounds=bound_list, integrality=1, method='highs')
+        result.x = np.round(result.x)
+        output = np.reshape([np.where(row == 1)[0] + 1 for row in np.reshape(result.x, (36, 6))], (6, 6))
+    elif len(problem.initial) == 12:  # board is 12x12
+        matrix = np.zeros((576, 1728))
+        for i in range(12):  # Inequalities for rows
+            for j in range(12):
+                for k in range(12):
+                    matrix[12 * i + j][k + 12 * j + 144 * i] = 1
+        for i in range(12):  # Inequalities for columns
+            for k in range(12):
+                for j in range(12):
+                    matrix[12 * i + k + 144][k + 12 * j + 144 * i] = 1
+        for j in range(12):  # Inequalities for 3d rows (z-axis)
+            for k in range(12):
+                for i in range(12):
+                    matrix[12 * j + k + 288][k + 12 * j + 144 * i] = 1
+        for n in range(12):
+            for k in range(12):
+                for x in [0, 12, 24, 36, 144, 156, 168, 180, 288, 300, 312, 324]:
+                    matrix[12 * n + k + 432][x + k + 48 * (n % 3) + 432 * (n // 4)] = 1
+        b = np.full(576, 1).transpose()
+        bound_list = [(0, 1) for _ in range(1728)]
+        for x in range(12):
+            for y in range(12):
+                if problem.initial[x][y] != 0:
+                    bound_list[12 * (12 * x + y) + problem.initial[x][y] - 1] = (1, 1)
+        result = sp.optimize.linprog(c=np.ones(1728), A_eq=matrix, b_eq=b, bounds=bound_list, integrality=1, method='highs')
+        result.x = np.round(result.x)
+        output = np.reshape([np.where(row == 1)[0] + 1 for row in np.reshape(result.x, (144, 12))], (12, 12))
+    # create list of nodes
+    parent = None
+    start_board = copy.deepcopy(problem.initial)
+    start_board_ones = np.where(start_board > 0, 0, 1)
+    board_with_filled_in_values = np.multiply(start_board_ones, output)
+    cur_board = Node(output)
+    for x_value in range(len(start_board_ones)):
+        for y_value in range(len(start_board_ones)):
+            if board_with_filled_in_values[x_value][y_value] > 0:
+                start_board[x_value][y_value] = board_with_filled_in_values[x_value][y_value]
+                for row in range(len(start_board)):
+                    start_board[row] = list(start_board[row])
+                cur_board = Node(list(start_board), parent)
+                parent = copy.deepcopy(cur_board)
+    return cur_board
+
 
 def best_first_graph_search(problem, f, display=False):
     """Search the nodes with the lowest f scores first.
