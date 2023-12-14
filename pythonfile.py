@@ -38,21 +38,8 @@ all_clear_button1 = Button(655, 800, ac_Button_img, 1)
 all_clear_button2 = Button(655, 710, ac_Button_img, 1)
 all_clear_button3 = Button(655, 890, ac_Button_img, 1)
 single_clears = []
-for i in range (0, 13):
-    single_clears.append(Button(913, 523 + (30 * i), x_Button_img, 1))
-
-# single_clear1 = Button(913, 523, x_Button_img, 1)
-# single_clear2 = Button(913, 553, x_Button_img, 1)
-# single_clear3 = Button(913, 583, x_Button_img, 1)
-# single_clear4 = Button(913, 613, x_Button_img, 1)
-# single_clear5 = Button(913, 643, x_Button_img, 1)
-# single_clear6 = Button(913, 673, x_Button_img, 1)
-# single_clear7 = Button(913, 703, x_Button_img, 1)
-# single_clear8 = Button(913, 733, x_Button_img, 1)
-# single_clear9 = Button(913, 763, x_Button_img, 1)
-# single_clear10 = Button(913, 793, x_Button_img, 1)
-# single_clear11 = Button(913, 823, x_Button_img, 1)
-# single_clear12 = Button(913, 853, x_Button_img, 1)
+for s in range (0, 13):
+    single_clears.append(Button(913, 523 + (30 * s), x_Button_img, 1))
 
 # create option box instances
 list1 = OptionBox(700, 150, 160, 40, (150, 150, 150), (100, 200, 255), pygame.font.SysFont('Comic Sans MS', 30),
@@ -81,33 +68,9 @@ warning_message3_2 = TextComment(655, 955, "Comic Sans MS", (205, 0, 0), 15)
 # create text field instances
 data_input_cols = []
 data_input_groups = []
-for i in range (0, 13):
-    data_input_cols.append(TextField(655, 520 + (30 * i), 256, pygame.font.SysFont("Comic Sans MS", 15), False))
-    data_input_groups.append(pygame.sprite.Group(data_input_cols[i]))
-# dataInputCol1 = TextField(655, 520, 256, pygame.font.SysFont("Comic Sans MS", 15), False)
-# dataInputCol2 = TextField(655, 550, 256, pygame.font.SysFont("Comic Sans MS", 15), False)
-# dataInputCol3 = TextField(655, 580, 256, pygame.font.SysFont("Comic Sans MS", 15), False)
-# dataInputCol4 = TextField(655, 610, 256, pygame.font.SysFont("Comic Sans MS", 15), False)
-# dataInputCol5 = TextField(655, 640, 256, pygame.font.SysFont("Comic Sans MS", 15), False)
-# dataInputCol6 = TextField(655, 670, 256, pygame.font.SysFont("Comic Sans MS", 15), False)
-# dataInputCol7 = TextField(655, 700, 256, pygame.font.SysFont("Comic Sans MS", 15), False)
-# dataInputCol8 = TextField(655, 730, 256, pygame.font.SysFont("Comic Sans MS", 15), False)
-# dataInputCol9 = TextField(655, 760, 256, pygame.font.SysFont("Comic Sans MS", 15), False)
-# dataInputCol10 = TextField(655, 790, 256, pygame.font.SysFont("Comic Sans MS", 15), False)
-# dataInputCol11 = TextField(655, 820, 256, pygame.font.SysFont("Comic Sans MS", 15), False)
-# dataInputCol12 = TextField(655, 850, 256, pygame.font.SysFont("Comic Sans MS", 15), False)
-# dataInputGroup1 = pygame.sprite.Group(dataInputCol1)
-# dataInputGroup2 = pygame.sprite.Group(dataInputCol2)
-# dataInputGroup3 = pygame.sprite.Group(dataInputCol3)
-# dataInputGroup4 = pygame.sprite.Group(dataInputCol4)
-# dataInputGroup5 = pygame.sprite.Group(dataInputCol5)
-# dataInputGroup6 = pygame.sprite.Group(dataInputCol6)
-# dataInputGroup7 = pygame.sprite.Group(dataInputCol7)
-# dataInputGroup8 = pygame.sprite.Group(dataInputCol8)
-# dataInputGroup9 = pygame.sprite.Group(dataInputCol9)
-# dataInputGroup10 = pygame.sprite.Group(dataInputCol10)
-# dataInputGroup11 = pygame.sprite.Group(dataInputCol11)
-# dataInputGroup12 = pygame.sprite.Group(dataInputCol12)
+for d in range(0, 13):
+    data_input_cols.append(TextField(655, 520 + (30 * d), 256, pygame.font.SysFont("Comic Sans MS", 15), False))
+    data_input_groups.append(pygame.sprite.Group(data_input_cols[d]))
 
 clickable_row9 = []
 clickable_row12 = []
@@ -195,8 +158,8 @@ def main():
             print("Generating Puzzle...")
 
             def text_input(grid_len):
-                for k in range(grid_len):
-                    if len(data_input_cols[j].text) > 0:
+                for i in range(grid_len):
+                    if len(data_input_cols[i].text) > 0:
                         return True
                 return False
 
@@ -204,8 +167,8 @@ def main():
                 if text_input(9):
                     value_array = []
                     raw_lists = []
-                    for j in range(9):
-                        raw_lists.append(data_input_cols[j])
+                    for i in range(9):
+                        raw_lists.append(data_input_cols[i])
 
                     for raw_list in raw_lists:
                         if len(raw_list.text) < 25 or len(raw_list.text) > 25:
@@ -227,8 +190,8 @@ def main():
                 if text_input(6):
                     value_array = []
                     raw_lists = []
-                    for j in range(6):
-                        raw_lists.append(data_input_cols[j])
+                    for i in range(6):
+                        raw_lists.append(data_input_cols[i])
 
                     for raw_list in raw_lists:
                         if len(raw_list.text) < 16 or len(raw_list.text) > 16:
@@ -250,8 +213,8 @@ def main():
                 if text_input(12):
                     value_array = []
                     raw_lists = []
-                    for j in range(12):
-                        raw_lists.append(data_input_cols[j])
+                    for i in range(12):
+                        raw_lists.append(data_input_cols[i])
 
                     for raw_list in raw_lists:
                         if len(raw_list.text) < 37 or len(raw_list.text) > 37:
@@ -301,20 +264,20 @@ def main():
             if all_clear_button1.draw(win):
                 revert_text_colors()
                 pygame.draw.rect(win, (251, 247, 245), pygame.Rect(655, 860, 300, 250))
-                for j in range(9):
-                    data_input_cols[j].text = ""
+                for i in range(9):
+                    data_input_cols[i].text = ""
         elif grid_check == 1:
             if all_clear_button2.draw(win):
                 revert_text_colors()
                 pygame.draw.rect(win, (251, 247, 245), pygame.Rect(655, 760, 300, 250))
-                for j in range(6):
-                    data_input_cols[j].text = ""
+                for i in range(6):
+                    data_input_cols[i].text = ""
         elif grid_check == 2:
             if all_clear_button3.draw(win):
                 revert_text_colors()
                 pygame.draw.rect(win, (251, 247, 245), pygame.Rect(655, 940, 300, 250))
-                for j in range(12):
-                    data_input_cols[j].text = ""
+                for i in range(12):
+                    data_input_cols[i].text = ""
 
         tmp = 0
         if grid_check == 0:
@@ -323,72 +286,10 @@ def main():
             tmp = 6
         elif grid_check == 2:
             tmp = 12
-        for j in range(0, tmp):
-            if single_clears[j].draw(win):
-                data_input_cols[j].color = (0, 0, 0)
-                data_input_cols[j].text = ""
-
-        # if single_clear1.draw(win):
-        #     dataInputCol1.color = (0, 0, 0)
-        #     dataInputCol1.text = ""
-        #
-        # if (single_clear2.draw(win)):
-        #     dataInputCol2.color = (0, 0, 0)
-        #     dataInputCol2.text = ""
-        #
-        # if single_clear3.draw(win):
-        #     dataInputCol3.color = (0, 0, 0)
-        #     dataInputCol3.text = ""
-        #
-        # if single_clear4.draw(win):
-        #     dataInputCol4.color = (0, 0, 0)
-        #     dataInputCol4.text = ""
-        #
-        # if single_clear5.draw(win):
-        #     dataInputCol5.color = (0, 0, 0)
-        #     dataInputCol5.text = ""
-        #
-        # if single_clear6.draw(win):
-        #     dataInputCol6.color = (0, 0, 0)
-        #     dataInputCol6.text = ""
-        #
-        # if grid_check == 0:
-        #     if single_clear7.draw(win):
-        #         dataInputCol7.color = (0, 0, 0)
-        #         dataInputCol7.text = ""
-        #
-        #     if single_clear8.draw(win):
-        #         dataInputCol8.color = (0, 0, 0)
-        #         dataInputCol8.text = ""
-        #
-        #     if single_clear9.draw(win):
-        #         dataInputCol9.color = (0, 0, 0)
-        #         dataInputCol9.text = ""
-        #
-        # elif grid_check == 2:
-        #     if single_clear7.draw(win):
-        #         dataInputCol7.color = (0, 0, 0)
-        #         dataInputCol7.text = ""
-        #
-        #     if single_clear8.draw(win):
-        #         dataInputCol8.color = (0, 0, 0)
-        #         dataInputCol8.text = ""
-        #
-        #     if single_clear9.draw(win):
-        #         dataInputCol9.color = (0, 0, 0)
-        #         dataInputCol9.text = ""
-        #
-        #     if single_clear10.draw(win):
-        #         dataInputCol10.color = (0, 0, 0)
-        #         dataInputCol10.text = ""
-        #
-        #     if single_clear11.draw(win):
-        #         dataInputCol11.color = (0, 0, 0)
-        #         dataInputCol11.text = ""
-        #
-        #     if single_clear12.draw(win):
-        #         dataInputCol12.color = (0, 0, 0)
-        #         dataInputCol12.text = ""
+        for i in range(0, tmp):
+            if single_clears[i].draw(win):
+                data_input_cols[i].color = (0, 0, 0)
+                data_input_cols[i].text = ""
 
         # draws comments
         title.draw(win, "The Sudoku Solver")
@@ -434,7 +335,6 @@ def main():
         elif grid_check == 2:
             pygame.draw.rect(win, (251, 247, 245), pygame.Rect(655, 520, 256, 360))
 
-
         if grid_check == 0:
             for single in clickable_row9:
                 single["group"].update(event_list)
@@ -444,7 +344,6 @@ def main():
                     single["field"].limiter = True
                 else:
                     single["field"].limiter = False
-
 
         elif grid_check == 1:
             for single in clickable_row6:
@@ -469,35 +368,35 @@ def main():
         # ---------------------------------------------------------------------------------------
         if grid_check == 0:
             # checks number limit for every single text input
-            for j in range(9):
-                data_input_cols[j].limiter = len(data_input_cols[j].text) >= 25
+            for i in range(9):
+                data_input_cols[i].limiter = len(data_input_cols[i].text) >= 25
 
             # draws and updates every 9x9 text input
-            for j in range(9):
-                data_input_groups[j].update(event_list)
-                data_input_groups[j].draw(win)
+            for i in range(9):
+                data_input_groups[i].update(event_list)
+                data_input_groups[i].draw(win)
 
         if grid_check == 1:
 
             # checks number limit for every single text input
-            for j in range(6):
-                data_input_cols[j].limiter = len(data_input_cols[j].text) >= 16
+            for i in range(6):
+                data_input_cols[i].limiter = len(data_input_cols[i].text) >= 16
 
             # draws and updates every 9x9 text input
-            for j in range(6):
-                data_input_groups[j].update(event_list)
-                data_input_groups[j].draw(win)
+            for i in range(6):
+                data_input_groups[i].update(event_list)
+                data_input_groups[i].draw(win)
 
         if grid_check == 2:
 
             # checks number limit for every single text input
-            for j in range(12):
-                data_input_cols[j].limiter = len(data_input_cols[j].text) >= 37
+            for i in range(12):
+                data_input_cols[i].limiter = len(data_input_cols[i].text) >= 37
 
             # draws and updates every 9x9 text input
-            for j in range(12):
-                data_input_groups[j].update(event_list)
-                data_input_groups[j].draw(win)
+            for i in range(12):
+                data_input_groups[i].update(event_list)
+                data_input_groups[i].draw(win)
 
         # draws options boxes
         list2.draw(win)
@@ -727,7 +626,7 @@ def make_click_cells(n, g=None):
     text_fields = []
 
     for i in range(1, n):
-        for j in range (0, n-1):
+        for j in range(0, n-1):
             if g[j][i-1] == 0:
                 new_field = TextField(50 * i, 150 + (j * 50), 50, pygame.font.SysFont("Comic Sans MS", 30), False)
                 new_group = pygame.sprite.Group(new_field)
