@@ -54,7 +54,7 @@ single_clear12 = Button(913, 853, x_Button_img, 1)
 list1 = OptionBox(700, 150, 160, 40, (150, 150, 150), (100, 200, 255), pygame.font.SysFont('Comic Sans MS', 30),
                   ["9x9", "6x6", "12x12"])
 list2 = OptionBox(700, 200, 160, 40, (150, 150, 150), (100, 200, 255), pygame.font.SysFont('Comic Sans MS', 25),
-                  ["DFS", "LP", "A Star"])
+                  ["DFS", "LP", "Naked Singles"])
 
 # saves previously chosen grid and algorithm options
 previous_grid = 0

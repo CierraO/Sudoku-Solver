@@ -38,7 +38,7 @@ class SudokuPuzzle:
             next_step = path[self.step]
             self.step += 1
             return next_step.state, self.find_blank_square(next_step.parent.state)
-        return False
+        return False, False
 
     def find_blank_square(self, bd=None):
         """Returns the position of the first blank square in the board as a tuple.
