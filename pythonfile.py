@@ -285,6 +285,8 @@ def main():
                 if puzzle.get_solution(list2.selected):
                     populate_board(puzzle.get_solution(list2.selected)[0])
                     print("Solved!")
+                else:
+                    raise Exception
             except:
                 print("No Possible Solution With This Algorithm")
                 error_text.draw(win, "No Possible Solution With This Algorithm")
