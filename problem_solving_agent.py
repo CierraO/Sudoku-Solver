@@ -225,6 +225,7 @@ class SudokuAgent(SimpleProblemSolvingAgent):
         problem = self.problem.initial
         return problem
 
+
     def search(self, algorithm):
         algorithm = Algorithms(algorithm)
         match algorithm:
