@@ -91,6 +91,10 @@ dataInputGroup10 = pygame.sprite.Group(dataInputCol10)
 dataInputGroup11 = pygame.sprite.Group(dataInputCol11)
 dataInputGroup12 = pygame.sprite.Group(dataInputCol12)
 
+clickable_row9 = []
+clickable_row12 = []
+clickable_row6 = []
+
 
 def main():
     global starting_grid
@@ -111,8 +115,6 @@ def main():
 
     populate_board(starting_grid)
     grid_check = 0
-
-    row1_test = make_click_cells(9)
 
     # game loop
     run = True
@@ -404,9 +406,58 @@ def main():
         elif grid_check == 2:
             pygame.draw.rect(win, (251, 247, 245), pygame.Rect(655, 520, 256, 360))
 
-        for group in row1_test:
-            group.update(event_list)
-            group.draw(win)
+
+        if grid_check == 0:
+            for i in range(0, len(clickable_row9)):
+
+                col_num = i // len(starting_grid[0])
+                row_num = i % len(starting_grid[0])
+
+                if starting_grid[row_num][col_num] == 0:
+                    single = clickable_row9[i]
+
+                    single["group"].update(event_list)
+                    single["group"].draw(win)
+
+                    if len(single["field"].text) >= 1:
+                        single["field"].limiter = True
+                    else:
+                        single["field"].limiter = False
+
+
+        elif grid_check == 1:
+            for i in range(0, len(clickable_row6)):
+
+                col_num = i // len(starting_grid[0])
+                row_num = i % len(starting_grid[0])
+
+                if starting_grid[row_num][col_num] == 0:
+                    single = clickable_row6[i]
+
+                    single["group"].update(event_list)
+                    single["group"].draw(win)
+
+                    if len(single["field"].text) >= 1:
+                        single["field"].limiter = True
+                    else:
+                        single["field"].limiter = False
+
+        elif grid_check == 2:
+            for i in range(0, len(clickable_row12)):
+
+                col_num = i // len(starting_grid[0])
+                row_num = i % len(starting_grid[0])
+
+                if starting_grid[row_num][col_num] == 0:
+                    single = clickable_row12[i]
+
+                    single["group"].update(event_list)
+                    single["group"].draw(win)
+
+                    if len(single["field"].text) >= 2:
+                        single["field"].limiter = True
+                    else:
+                        single["field"].limiter = False
 
         # ---------------------------------------------------------------------------------------
         if grid_check == 0:
@@ -817,6 +868,10 @@ def get_clue_positions():
 def populate_board(g, new_num=None):
     """Populate the sudoku board with numbers from the given grid."""
     clear_board()
+    global clickable_row9, clickable_row12, clickable_row6
+    clickable_row9 = make_click_cells(10)
+    clickable_row12 = make_click_cells(13)
+    clickable_row6 = make_click_cells(7)
 
     for i in range(0, len(g[0])):
         for j in range(0, len(g[0])):
@@ -859,10 +914,12 @@ def make_click_cells(n):
     text_fields = []
 
     for i in range(1, n):
-        new_field = TextField(50 * i, 150, 50, pygame.font.SysFont("Comic Sans MS", 30), False)
-        new_group = pygame.sprite.Group(new_field)
+        for j in range (0, n-1):
+            new_field = TextField(50 * i, 150 + (j * 50), 50, pygame.font.SysFont("Comic Sans MS", 30), False)
+            new_group = pygame.sprite.Group(new_field)
 
-        text_fields.append(new_group)
+            text_fields.append({"group": new_group, "field": new_field})
+
 
     return text_fields
 

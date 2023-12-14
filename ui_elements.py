@@ -51,7 +51,7 @@ class TextField(pygame.sprite.Sprite):
         super().__init__()
         self.color = (0, 0, 0)
         self.limiter = False
-        self.backcolor = None
+        self.backcolor = (251, 247, 245)
         self.pos = (x, y)
         self.width = w
         self.font = font
