@@ -209,20 +209,20 @@ def main():
                 print("No Possible Solution With This Algorithm")
                 error_text.draw(win, "No Possible Solution With This Algorithm")
         if stp_button.draw(win):
-            # try:
-            print("Next Step is...")
-            if puzzle.step == 1:
-                print("CLEARING")
-                clear_board()
-            g, new_num = puzzle.step_through(list2.selected)
-            if g:
-                if new_num:
-                    populate_board(g, new_num)
-                else:
-                    populate_board(g)
-            # except:
-            #     print("No Possible Solution With This Algorithm")
-            #     error_text.draw(win, "No Possible Solution With This Algorithm")
+            try:
+                print("Next Step is...")
+                if puzzle.step == 1:
+                    print("CLEARING")
+                    clear_board()
+                g, new_num = puzzle.step_through(list2.selected)
+                if g:
+                    if new_num:
+                        populate_board(g, new_num)
+                    else:
+                        populate_board(g)
+            except:
+                print("No Possible Solution With This Algorithm")
+                error_text.draw(win, "No Possible Solution With This Algorithm")
 
         if grid_check == 0:
             if all_clear_button1.draw(win):
