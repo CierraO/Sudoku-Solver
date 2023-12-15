@@ -129,74 +129,38 @@ def main():
                 return False
 
             if text_input(board_sizes[grid_check]):
-                if grid_check == 0:
-                    if text_input(9):
-                        value_array = []
-                        raw_lists = []
-                        for i in range(9):
-                            raw_lists.append(data_input_cols[i])
+                value_array = []
+                raw_lists = []
+                for i in range(board_sizes[grid_check]):
+                    raw_lists.append(data_input_cols[i])
 
-                        for raw_list in raw_lists:
-                            if len(raw_list.text) < 25 or len(raw_list.text) > 25:
-                                raw_list.color = (204, 0, 0)
-                                raw_list.text = "0, 0, 0, 0, 0, 0, 0, 0, 0"
-                                warning_message1_1.draw(win, "Warning: All Values Not Completely Filled")
-                                warning_message1_2.draw(win, "Were Replaced By 0s and Highlighted Red")
+                lim = 0
+                match grid_check:
+                    case 0:
+                        lim = 25
+                    case 1:
+                        lim = 16
+                    case 2:
+                        lim = 37
+                for raw_list in raw_lists:
+                    if len(raw_list.text) < lim or len(raw_list.text) > lim:
+                        raw_list.color = (204, 0, 0)
+                        raw_list.text = ""
+                        for i in range(board_sizes[grid_check]):
+                            raw_list.text = raw_list.text + "0"
+                            if i != board_sizes[grid_check] - 1:
+                                raw_list.text = raw_list.text + ", "
+                        warning_message1_1.draw(win, "Warning: All Values Not Completely Filled")
+                        warning_message1_2.draw(win, "Were Replaced By 0s and Highlighted Red")
 
-                        for raw_list in raw_lists:
-                            split_list = raw_list.text.split(", ")
-                            split_list = [int(single_item) for single_item in split_list]
-                            value_array.append(split_list)
-                        print(value_array)
-                        print(grid_check)
-                        starting_grid = value_array
-                        populate_board(starting_grid)
-
-                elif grid_check == 1:
-                    if text_input(6):
-                        value_array = []
-                        raw_lists = []
-                        for i in range(6):
-                            raw_lists.append(data_input_cols[i])
-
-                        for raw_list in raw_lists:
-                            if len(raw_list.text) < 16 or len(raw_list.text) > 16:
-                                raw_list.color = (204, 0, 0)
-                                raw_list.text = "0, 0, 0, 0, 0, 0"
-                                warning_message2_1.draw(win, "Warning: All Values Not Completely Filled")
-                                warning_message2_2.draw(win, "Were Replaced By 0s and Highlighted Red")
-
-                        for raw_list in raw_lists:
-                            split_list = raw_list.text.split(", ")
-                            split_list = [int(single_item) for single_item in split_list]
-                            value_array.append(split_list)
-                        print(value_array)
-                        print(grid_check)
-                        starting_grid = value_array
-                        populate_board(starting_grid)
-
-                elif grid_check == 2:
-                    if text_input(12):
-                        value_array = []
-                        raw_lists = []
-                        for i in range(12):
-                            raw_lists.append(data_input_cols[i])
-
-                        for raw_list in raw_lists:
-                            if len(raw_list.text) < 37 or len(raw_list.text) > 37:
-                                raw_list.color = (204, 0, 0)
-                                raw_list.text = "0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0"
-                                warning_message3_1.draw(win, "Warning: All Values Not Completely Filled")
-                                warning_message3_2.draw(win, "Were Replaced By 0s and Highlighted Red")
-
-                        for raw_list in raw_lists:
-                            split_list = raw_list.text.split(", ")
-                            split_list = [int(single_item) for single_item in split_list]
-                            value_array.append(split_list)
-                        print(value_array)
-                        print(grid_check)
-                        starting_grid = value_array
-                        populate_board(starting_grid)
+                for raw_list in raw_lists:
+                    split_list = raw_list.text.split(", ")
+                    split_list = [int(single_item) for single_item in split_list]
+                    value_array.append(split_list)
+                print(value_array)
+                print(grid_check)
+                starting_grid = value_array
+                populate_board(starting_grid)
             else:
                 # board chosen to be 6x6
                 if previous_grid == 1:
@@ -245,20 +209,20 @@ def main():
                 print("No Possible Solution With This Algorithm")
                 error_text.draw(win, "No Possible Solution With This Algorithm")
         if stp_button.draw(win):
-            try:
-                print("Next Step is...")
-                if puzzle.step == 1:
-                    print("CLEARING")
-                    clear_board()
-                g, new_num = puzzle.step_through(list2.selected)
-                if g:
-                    if new_num:
-                        populate_board(g, new_num)
-                    else:
-                        populate_board(g)
-            except:
-                print("No Possible Solution With This Algorithm")
-                error_text.draw(win, "No Possible Solution With This Algorithm")
+            # try:
+            print("Next Step is...")
+            if puzzle.step == 1:
+                print("CLEARING")
+                clear_board()
+            g, new_num = puzzle.step_through(list2.selected)
+            if g:
+                if new_num:
+                    populate_board(g, new_num)
+                else:
+                    populate_board(g)
+            # except:
+            #     print("No Possible Solution With This Algorithm")
+            #     error_text.draw(win, "No Possible Solution With This Algorithm")
 
         if grid_check == 0:
             if all_clear_button1.draw(win):
@@ -279,14 +243,7 @@ def main():
                 for i in range(12):
                     data_input_cols[i].text = ""
 
-        tmp = 0
-        if grid_check == 0:
-            tmp = 9
-        elif grid_check == 1:
-            tmp = 6
-        elif grid_check == 2:
-            tmp = 12
-        for i in range(0, tmp):
+        for i in range(0, board_sizes[grid_check]):
             if single_clears[i].draw(win):
                 data_input_cols[i].color = (0, 0, 0)
                 data_input_cols[i].text = ""
@@ -366,44 +323,27 @@ def main():
                     single["field"].limiter = False
 
         # ---------------------------------------------------------------------------------------
-        if grid_check == 0:
-            # checks number limit for every single text input
-            for i in range(9):
-                data_input_cols[i].limiter = len(data_input_cols[i].text) >= 25
-
-            # draws and updates every 9x9 text input
-            for i in range(9):
-                data_input_groups[i].update(event_list)
-                data_input_groups[i].draw(win)
-            board(win, starting_grid)
-
-        if grid_check == 1:
-
-            # checks number limit for every single text input
-            for i in range(6):
-                data_input_cols[i].limiter = len(data_input_cols[i].text) >= 16
-
-            # draws and updates every 9x9 text input
-            for i in range(6):
-                data_input_groups[i].update(event_list)
-                data_input_groups[i].draw(win)
-            board(win, starting_grid)
-
-        if grid_check == 2:
-
-            # checks number limit for every single text input
-            for i in range(12):
-                data_input_cols[i].limiter = len(data_input_cols[i].text) >= 37
-
-            # draws and updates every 9x9 text input
-            for i in range(12):
-                data_input_groups[i].update(event_list)
-                data_input_groups[i].draw(win)
-            board(win, starting_grid)
+        # checks number limit for every single text input
+        lim = 0
+        match grid_check:
+            case 0:
+                lim = 25
+            case 1:
+                lim = 16
+            case 2:
+                lim = 37
+        for i in range(board_sizes[grid_check]):
+            data_input_cols[i].limiter = len(data_input_cols[i].text) >= lim
 
         # draws options boxes
         list2.draw(win)
         list1.draw(win)
+
+        # draws and updates every 9x9 text input
+        for i in range(board_sizes[grid_check]):
+            data_input_groups[i].update(event_list)
+            data_input_groups[i].draw(win)
+        board(win, starting_grid)
 
         #        text_surface = base_font.render(user_text, True, (0, 0, 0))
         #        win.blit(text_surface, (0,0))
