@@ -3,6 +3,7 @@ import time
 
 import pygame
 import numpy
+import requests
 
 from sudoku_puzzle import SudokuPuzzle
 from ui_elements import Button, OptionBox, TextComment, TextField
@@ -47,6 +48,7 @@ list1 = OptionBox(700, 150, 160, 40, (150, 150, 150), (100, 200, 255), pygame.fo
 list2 = OptionBox(700, 200, 160, 40, (150, 150, 150), (100, 200, 255), pygame.font.SysFont('Comic Sans MS', 25),
                   ["DFS", "LP", "Singles"])
 
+
 board_sizes = [9, 6, 12]  # index this using grid_check to get the board size the user chose
 
 # saves previously chosen grid and algorithm options
@@ -58,7 +60,9 @@ title = TextComment(50, 40, "Comic Sans MS", (0, 0, 0), 40)
 names1 = TextComment(55, 90, "Comic Sans MS", (0, 0, 0), 20)
 names2 = TextComment(55, 115, "Comic Sans MS", (0, 0, 0), 20)
 error_text = TextComment(100, 900, "Comic Sans MS", (255, 0, 0), 20)
+
 suggested_algorithm_text = TextComment(660, 430, "Comic Sans MS", (0, 0, 255), 20)
+
 dataInputTag = TextComment(655, 500, "Comic Sans MS", (0, 0, 0), 15)
 warning_message1_1 = TextComment(655, 860, "Comic Sans MS", (205, 0, 0), 15)
 warning_message1_2 = TextComment(655, 877, "Comic Sans MS", (205, 0, 0), 15)
@@ -68,11 +72,13 @@ warning_message3_1 = TextComment(655, 940, "Comic Sans MS", (205, 0, 0), 15)
 warning_message3_2 = TextComment(655, 955, "Comic Sans MS", (205, 0, 0), 15)
 
 # create text field instances
+
 data_input_cols = []
 data_input_groups = []
 for d in range(0, 13):
     data_input_cols.append(TextField(1, 655, 520 + (30 * d), 256, pygame.font.SysFont("Comic Sans MS", 15), (0, 0, 0), False))
     data_input_groups.append(pygame.sprite.Group(data_input_cols[d]))
+
 
 clickable_row9 = []
 clickable_row12 = []
@@ -230,16 +236,20 @@ def main():
                 pygame.draw.rect(win, (251, 247, 245), pygame.Rect(655, 860, 300, 250))
                 for i in range(9):
                     data_input_cols[i].text = ""
+
         elif grid_check == 1:
             if all_clear_button2.draw(win):
                 revert_text_colors()
                 pygame.draw.rect(win, (251, 247, 245), pygame.Rect(655, 760, 300, 250))
+
                 for i in range(6):
                     data_input_cols[i].text = ""
+
         elif grid_check == 2:
             if all_clear_button3.draw(win):
                 revert_text_colors()
                 pygame.draw.rect(win, (251, 247, 245), pygame.Rect(655, 940, 300, 250))
+
                 for i in range(12):
                     data_input_cols[i].text = ""
 
@@ -247,6 +257,7 @@ def main():
             if single_clears[i].draw(win):
                 data_input_cols[i].color = (0, 0, 0)
                 data_input_cols[i].text = ""
+
 
         # draws comments
         title.draw(win, "The Sudoku Solver")
@@ -263,7 +274,9 @@ def main():
 
         if sug_button.draw(win):
             try:
+
                 pygame.draw.rect(win, (251, 247, 245), pygame.Rect(660, 430, 400, 50))
+
                 # algorithm DFS time
                 start_time_algo0 = time.perf_counter()
                 puzzle.get_solution(0)
@@ -302,6 +315,7 @@ def main():
                     single["field"].limiter = True
                 else:
                     single["field"].limiter = False
+
 
         elif grid_check == 1:
             for single in clickable_row6:
@@ -454,7 +468,21 @@ def board(window, grid_size):
                              (50, 50 + 50 * i + 100),
                              (50 * (num_columns_rows + 1), 50 + 50 * i + 100),
                              1)
+
     return pygame.display.update()
+
+
+# helper function to populate_grid()
+# queries api and returns a new grid
+def query9x9(new_grid):
+    # response = requests.get("https://sudoku-api.vercel.app/api/dosuku")
+    response = requests.get("https://sudoku-api.vercel.app/api/dosuku")
+    difficulty = response.json()['newboard']['grids'][0]['difficulty']
+    response = response.json()['newboard']['grids'][0]['value']
+    print("This board is ", difficulty)
+    for i in range(8):
+        numpy.put(new_grid[i], numpy.arange(9), response[i])
+    return new_grid
 
 
 # helper function
@@ -463,7 +491,7 @@ def populate_grid(grid):
     new_grid = numpy.zeros((len(grid), len(grid)), numpy.int8)
     # generate the limits of how many starting numbers for each board
     if len(grid) == 9:
-        hint_limit = 17  # limits to 17 starting numbers for 9x9 grid
+        return query9x9(new_grid)
     elif len(grid) == 6:
         hint_limit = 6  # limits to 6 starting numbers for 6x6 grid
     elif len(grid) == 12:
