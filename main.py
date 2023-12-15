@@ -47,6 +47,8 @@ list1 = OptionBox(700, 150, 160, 40, (150, 150, 150), (100, 200, 255), pygame.fo
 list2 = OptionBox(700, 200, 160, 40, (150, 150, 150), (100, 200, 255), pygame.font.SysFont('Comic Sans MS', 25),
                   ["DFS", "LP", "Singles"])
 
+board_sizes = [9, 6, 12]  # index this using grid_check to get the board size the user chose
+
 # saves previously chosen grid and algorithm options
 previous_grid = 0
 previous_algo = 0
@@ -69,7 +71,7 @@ warning_message3_2 = TextComment(655, 955, "Comic Sans MS", (205, 0, 0), 15)
 data_input_cols = []
 data_input_groups = []
 for d in range(0, 13):
-    data_input_cols.append(TextField(655, 520 + (30 * d), 256, pygame.font.SysFont("Comic Sans MS", 15), False))
+    data_input_cols.append(TextField(1, 655, 520 + (30 * d), 256, pygame.font.SysFont("Comic Sans MS", 15), (0, 0, 0), False))
     data_input_groups.append(pygame.sprite.Group(data_input_cols[d]))
 
 clickable_row9 = []
@@ -120,117 +122,115 @@ def main():
         if gen_button.draw(win):
             print("Generating Puzzle...")
 
-            # board chosen to be 6x6
-            if previous_grid == 1:
-                grid_check = 1
-                # initialize + populate grid
-                # current_grid = 6
-                grid_6x6 = numpy.zeros((6, 6), numpy.int8)
-                grid_6x6 = populate_grid(grid_6x6)
-                starting_grid = grid_6x6
-                puzzle = SudokuPuzzle(starting_grid)
-                populate_board(starting_grid)
-            # board chosen to be 9x9
-            elif previous_grid == 0:
-                grid_check = 0
-                # initialize + populate grid
-                # current_grid = 9
-                grid_9x9 = numpy.zeros((9, 9), numpy.int8)
-                grid_9x9 = populate_grid(grid_9x9)
-                starting_grid = grid_9x9
-                puzzle = SudokuPuzzle(starting_grid)
-                populate_board(starting_grid)
-            # board chosen to be 12x12
-            elif previous_grid == 2:
-                grid_check = 2
-                # initialize + populate grid
-                grid_12x12 = numpy.zeros((12, 12), numpy.int8)
-                grid_12x12 = populate_grid(grid_12x12)
-                starting_grid = grid_12x12
-                puzzle = SudokuPuzzle(starting_grid)
-
-                populate_board(starting_grid)
-
-        if selected_option_algo >= 0:
-            print("Algo Option: ", selected_option_algo)
-        # draw buttons and functionality
-        if gen_button.draw(win):
-            print("Generating Puzzle...")
-
             def text_input(grid_len):
                 for i in range(grid_len):
                     if len(data_input_cols[i].text) > 0:
                         return True
                 return False
 
-            if grid_check == 0:
-                if text_input(9):
-                    value_array = []
-                    raw_lists = []
-                    for i in range(9):
-                        raw_lists.append(data_input_cols[i])
+            if text_input(board_sizes[grid_check]):
+                if grid_check == 0:
+                    if text_input(9):
+                        value_array = []
+                        raw_lists = []
+                        for i in range(9):
+                            raw_lists.append(data_input_cols[i])
 
-                    for raw_list in raw_lists:
-                        if len(raw_list.text) < 25 or len(raw_list.text) > 25:
-                            raw_list.color = (204, 0, 0)
-                            raw_list.text = "0, 0, 0, 0, 0, 0, 0, 0, 0"
-                            warning_message1_1.draw(win, "Warning: All Values Not Completely Filled")
-                            warning_message1_2.draw(win, "Were Replaced By 0s and Highlighted Red")
+                        for raw_list in raw_lists:
+                            if len(raw_list.text) < 25 or len(raw_list.text) > 25:
+                                raw_list.color = (204, 0, 0)
+                                raw_list.text = "0, 0, 0, 0, 0, 0, 0, 0, 0"
+                                warning_message1_1.draw(win, "Warning: All Values Not Completely Filled")
+                                warning_message1_2.draw(win, "Were Replaced By 0s and Highlighted Red")
 
-                    for raw_list in raw_lists:
-                        split_list = raw_list.text.split(", ")
-                        split_list = [int(single_item) for single_item in split_list]
-                        value_array.append(split_list)
-                    print(value_array)
-                    print(grid_check)
-                    starting_grid = value_array
+                        for raw_list in raw_lists:
+                            split_list = raw_list.text.split(", ")
+                            split_list = [int(single_item) for single_item in split_list]
+                            value_array.append(split_list)
+                        print(value_array)
+                        print(grid_check)
+                        starting_grid = value_array
+                        populate_board(starting_grid)
+
+                elif grid_check == 1:
+                    if text_input(6):
+                        value_array = []
+                        raw_lists = []
+                        for i in range(6):
+                            raw_lists.append(data_input_cols[i])
+
+                        for raw_list in raw_lists:
+                            if len(raw_list.text) < 16 or len(raw_list.text) > 16:
+                                raw_list.color = (204, 0, 0)
+                                raw_list.text = "0, 0, 0, 0, 0, 0"
+                                warning_message2_1.draw(win, "Warning: All Values Not Completely Filled")
+                                warning_message2_2.draw(win, "Were Replaced By 0s and Highlighted Red")
+
+                        for raw_list in raw_lists:
+                            split_list = raw_list.text.split(", ")
+                            split_list = [int(single_item) for single_item in split_list]
+                            value_array.append(split_list)
+                        print(value_array)
+                        print(grid_check)
+                        starting_grid = value_array
+                        populate_board(starting_grid)
+
+                elif grid_check == 2:
+                    if text_input(12):
+                        value_array = []
+                        raw_lists = []
+                        for i in range(12):
+                            raw_lists.append(data_input_cols[i])
+
+                        for raw_list in raw_lists:
+                            if len(raw_list.text) < 37 or len(raw_list.text) > 37:
+                                raw_list.color = (204, 0, 0)
+                                raw_list.text = "0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0"
+                                warning_message3_1.draw(win, "Warning: All Values Not Completely Filled")
+                                warning_message3_2.draw(win, "Were Replaced By 0s and Highlighted Red")
+
+                        for raw_list in raw_lists:
+                            split_list = raw_list.text.split(", ")
+                            split_list = [int(single_item) for single_item in split_list]
+                            value_array.append(split_list)
+                        print(value_array)
+                        print(grid_check)
+                        starting_grid = value_array
+                        populate_board(starting_grid)
+            else:
+                # board chosen to be 6x6
+                if previous_grid == 1:
+                    grid_check = 1
+                    # initialize + populate grid
+                    # current_grid = 6
+                    grid_6x6 = numpy.zeros((6, 6), numpy.int8)
+                    grid_6x6 = populate_grid(grid_6x6)
+                    starting_grid = grid_6x6
+                    puzzle = SudokuPuzzle(starting_grid)
+                    populate_board(starting_grid)
+                # board chosen to be 9x9
+                elif previous_grid == 0:
+                    grid_check = 0
+                    # initialize + populate grid
+                    # current_grid = 9
+                    grid_9x9 = numpy.zeros((9, 9), numpy.int8)
+                    grid_9x9 = populate_grid(grid_9x9)
+                    starting_grid = grid_9x9
+                    puzzle = SudokuPuzzle(starting_grid)
+                    populate_board(starting_grid)
+                # board chosen to be 12x12
+                elif previous_grid == 2:
+                    grid_check = 2
+                    # initialize + populate grid
+                    grid_12x12 = numpy.zeros((12, 12), numpy.int8)
+                    grid_12x12 = populate_grid(grid_12x12)
+                    starting_grid = grid_12x12
+                    puzzle = SudokuPuzzle(starting_grid)
+
                     populate_board(starting_grid)
 
-            elif grid_check == 1:
-                if text_input(6):
-                    value_array = []
-                    raw_lists = []
-                    for i in range(6):
-                        raw_lists.append(data_input_cols[i])
-
-                    for raw_list in raw_lists:
-                        if len(raw_list.text) < 16 or len(raw_list.text) > 16:
-                            raw_list.color = (204, 0, 0)
-                            raw_list.text = "0, 0, 0, 0, 0, 0"
-                            warning_message2_1.draw(win, "Warning: All Values Not Completely Filled")
-                            warning_message2_2.draw(win, "Were Replaced By 0s and Highlighted Red")
-
-                    for raw_list in raw_lists:
-                        split_list = raw_list.text.split(", ")
-                        split_list = [int(single_item) for single_item in split_list]
-                        value_array.append(split_list)
-                    print(value_array)
-                    print(grid_check)
-                    starting_grid = value_array
-                    populate_board(starting_grid)
-
-            elif grid_check == 2:
-                if text_input(12):
-                    value_array = []
-                    raw_lists = []
-                    for i in range(12):
-                        raw_lists.append(data_input_cols[i])
-
-                    for raw_list in raw_lists:
-                        if len(raw_list.text) < 37 or len(raw_list.text) > 37:
-                            raw_list.color = (204, 0, 0)
-                            raw_list.text = "0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0"
-                            warning_message3_1.draw(win, "Warning: All Values Not Completely Filled")
-                            warning_message3_2.draw(win, "Were Replaced By 0s and Highlighted Red")
-
-                    for raw_list in raw_lists:
-                        split_list = raw_list.text.split(", ")
-                        split_list = [int(single_item) for single_item in split_list]
-                        value_array.append(split_list)
-                    print(value_array)
-                    print(grid_check)
-                    starting_grid = value_array
-                    populate_board(starting_grid)
+        if selected_option_algo >= 0:
+            print("Algo Option: ", selected_option_algo)
 
         if sol_button.draw(win):
             print('Solving Puzzle...')
@@ -375,6 +375,7 @@ def main():
             for i in range(9):
                 data_input_groups[i].update(event_list)
                 data_input_groups[i].draw(win)
+            board(win, starting_grid)
 
         if grid_check == 1:
 
@@ -386,6 +387,7 @@ def main():
             for i in range(6):
                 data_input_groups[i].update(event_list)
                 data_input_groups[i].draw(win)
+            board(win, starting_grid)
 
         if grid_check == 2:
 
@@ -397,6 +399,7 @@ def main():
             for i in range(12):
                 data_input_groups[i].update(event_list)
                 data_input_groups[i].draw(win)
+            board(win, starting_grid)
 
         # draws options boxes
         list2.draw(win)
@@ -510,7 +513,7 @@ def board(window, grid_size):
                              (50, 50 + 50 * i + 100),
                              (50 * (num_columns_rows + 1), 50 + 50 * i + 100),
                              1)
-    return pygame.display.flip()
+    return pygame.display.update()
 
 
 # helper function
@@ -622,7 +625,7 @@ def make_click_cells(n, g=None):
     for i in range(1, n):
         for j in range(0, n-1):
             if g[j][i-1] == 0:
-                new_field = TextField(50 * i, 150 + (j * 50), 50, pygame.font.SysFont("Comic Sans MS", 30), False)
+                new_field = TextField(0, 50 * i, 150 + (j * 50), 50, pygame.font.SysFont("Comic Sans MS", 30), (251, 247, 245),False)
                 new_group = pygame.sprite.Group(new_field)
 
                 text_fields.append({"group": new_group, "field": new_field})

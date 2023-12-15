@@ -47,9 +47,10 @@ class Button:
 
 
 class TextField(pygame.sprite.Sprite):
-    def __init__(self, x, y, w, font, limiter):
+    def __init__(self, type, x, y, w, font, border_color, limiter):
         super().__init__()
-        self.color = (0, 0, 0)
+        self.type = type
+        self.color = border_color
         self.limiter = False
         self.backcolor = (251, 247, 245)
         self.pos = (x, y)
@@ -86,10 +87,13 @@ class TextField(pygame.sprite.Sprite):
                         self.text = self.text[0:-1]
                     elif event.key == pygame.K_DELETE:   # move back one space
                         self.text = self.text[0:-1]
-                        self.color = (0, 0, 0)  # resets color to black once deleting
+                        if self.type == 1:
+                            self.color = (0, 0, 0)  # resets color to black once deleting
+                        else:
+                            self.color = (251, 247, 245)
                     else:   # type whatever key is pressed
                         self.text += event.unicode
-                        self.color = (0, 0, 0)
+                        self.color = (0, 0, 255)
                 self.draw()  # draw the key
 
             if self.limiter == True:
@@ -99,12 +103,14 @@ class TextField(pygame.sprite.Sprite):
                         self.active = False
                     elif event.key == pygame.K_BACKSPACE:  # move back one space
                         self.text = self.text[0:-1]
-                        self.color = (0, 0, 0) # resets color to black once deleting
+                        if self.type == 1:
+                            self.color = (0, 0, 0)  # resets color to black once deleting
+                        else:
+                            self.color = (251, 247, 245)
                     elif event.key == pygame.K_DELETE:  # move back one space
                         self.text = self.text[0:-1]
-                        self.color = (0, 0, 0) # resets color to black once deleting
+                        self.color = (0, 0, 255)  # resets color to black once deleting
                 self.draw()  # draw the key
-
 
 
 class OptionBox:
