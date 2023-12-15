@@ -263,6 +263,7 @@ def main():
 
         if sug_button.draw(win):
             try:
+                pygame.draw.rect(win, (251, 247, 245), pygame.Rect(660, 430, 400, 50))
                 # algorithm DFS time
                 start_time_algo0 = time.perf_counter()
                 puzzle.get_solution(0)
