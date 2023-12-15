@@ -3,6 +3,7 @@ import time
 
 import pygame
 import numpy
+import requests
 
 from sudoku_puzzle import SudokuPuzzle
 from ui_elements import Button, OptionBox, TextComment, TextField
@@ -833,13 +834,26 @@ def board(window, grid_size):
     return pygame.display.flip()
 
 
+# helper function to populate_grid()
+# queries api and returns a new grid
+def query9x9(new_grid):
+    response = requests.get("https://sudoku-api.vercel.app/api/dosuku")
+    response = response.json()['newboard']['grids'][0]['value']
+    for i in range(8):
+        numpy.put(new_grid[i], numpy.arange(9), response[i])
+
+    print(response)
+    print(new_grid)
+    return new_grid
+
+
 # helper function
 # fill board with random numbers
 def populate_grid(grid):
     new_grid = numpy.zeros((len(grid), len(grid)), numpy.int8)
     # generate the limits of how many starting numbers for each board
     if len(grid) == 9:
-        hint_limit = 17  # limits to 17 starting numbers for 9x9 grid
+        return query9x9(new_grid)
     elif len(grid) == 6:
         hint_limit = 6  # limits to 6 starting numbers for 6x6 grid
     elif len(grid) == 12:
