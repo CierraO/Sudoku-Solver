@@ -837,13 +837,15 @@ def board(window, grid_size):
 # helper function to populate_grid()
 # queries api and returns a new grid
 def query9x9(new_grid):
+    # response = requests.get("https://sudoku-api.vercel.app/api/dosuku")
     response = requests.get("https://sudoku-api.vercel.app/api/dosuku")
+    difficulty = response.json()['newboard']['grids'][0]['difficulty']
     response = response.json()['newboard']['grids'][0]['value']
+    print("This board is ", difficulty)
     for i in range(8):
         numpy.put(new_grid[i], numpy.arange(9), response[i])
 
-    print(response)
-    print(new_grid)
+
     return new_grid
 
 
