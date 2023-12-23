@@ -11,12 +11,21 @@ class SudokuPuzzle:
         self.length = numpy.size(board, 0)
         self.step = 1
 
-    def get_solution(self, algorithm=0):
+    def get_solution(self, algorithm=0, time_test=False):
         """Gets a valid board with all positions filled in, plus the end node, using the specified algorithm.
-        The end node allows for tracing the steps of the solution. If there is no solution, return False."""
+        The end node allows for tracing the steps of the solution. If there is no solution, return False.
+        The time_test parameter indicates whether the function is being called to test how long it takes
+        the given algorithm to solve the puzzle."""
+        # If this is a time test, clear the "cache" so that the solution must be re-computed
+        if time_test:
+            self.solutions[algorithm] = None
+
+        self.step = 1  # reset the step-through
+
+        # If the solution has already been found, no need to re-compute it
         if self.solutions[algorithm]:
             return self.solutions[algorithm].state, self.solutions[algorithm]
-        self.step = 1  # reset the step-through
+
         problem = SudokuProblem(self)
         agent = SudokuAgent(problem)
         self.solutions[algorithm] = agent.search(algorithm)
@@ -42,6 +51,7 @@ class SudokuPuzzle:
                 new_num = next_step.action[0]
 
             return next_step.state, new_num
+        self.step = 1
         return False, False
 
     def find_blank_square(self, bd=None):

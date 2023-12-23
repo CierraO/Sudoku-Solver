@@ -124,6 +124,7 @@ def main():
         if selected_option_algo >= 0:
             print("Algo Option: ", selected_option_algo)
             previous_algo = selected_option_grid
+            puzzle.step = 1
         # draw buttons and functionality
         if gen_button.draw(win):
             print("Generating Puzzle...")
@@ -198,9 +199,6 @@ def main():
                     puzzle = SudokuPuzzle(starting_grid)
 
                     populate_board(starting_grid)
-
-        if selected_option_algo >= 0:
-            print("Algo Option: ", selected_option_algo)
 
         if sol_button.draw(win):
             print('Solving Puzzle...')
@@ -279,21 +277,35 @@ def main():
 
                 # algorithm DFS time
                 start_time_algo0 = time.perf_counter()
-                puzzle.get_solution(0)
-                end_time_algo0 = time.perf_counter()
-                time_algo0 = end_time_algo0 - start_time_algo0
+                if puzzle.get_solution(0, True):
+                    end_time_algo0 = time.perf_counter()
+                    time_algo0 = end_time_algo0 - start_time_algo0
+                else:
+                    time_algo0 = numpy.inf
                 # algorithm LP time
                 start_time_algo1 = time.perf_counter()
-                puzzle.get_solution(1)
-                end_time_algo1 = time.perf_counter()
-                time_algo1 = end_time_algo1 - start_time_algo1
+                if puzzle.get_solution(1, True):
+                    end_time_algo1 = time.perf_counter()
+                    time_algo1 = end_time_algo1 - start_time_algo1
+                else:
+                    time_algo1 = numpy.inf
+                # algorithm Naked Singles time
+                start_time_algo2 = time.perf_counter()
+                if puzzle.get_solution(2, True):
+                    end_time_algo2 = time.perf_counter()
+                    time_algo2 = end_time_algo2 - start_time_algo2
+                else:
+                    time_algo2 = numpy.inf
                 # comparison
-                if time_algo1 >= time_algo0:
+                if (time_algo1 <= time_algo0) and (time_algo1 <= time_algo2):
                     print("LP Algorithm is the Fastest")
                     suggested_algorithm_text.draw(win, "LP Algorithm is the Fastest")
-                else:
+                elif time_algo0 <= time_algo2:
                     print("DFS Algorithm is the Fastest")
                     suggested_algorithm_text.draw(win, "DFS Algorithm is the Fastest")
+                else:
+                    print("Naked Singles Algorithm is the Fastest")
+                    suggested_algorithm_text.draw(win, "Singles Algorithm is the Fastest")
             except:
                 print("No Possible Solutions With Algorithms")
                 suggested_algorithm_text.draw(win, "No Possible Solutions")

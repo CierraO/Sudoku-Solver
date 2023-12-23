@@ -420,8 +420,8 @@ def simplex_search(problem):
         result.x = np.round(result.x)
         output = np.reshape([np.where(row == 1)[0] + 1 for row in np.reshape(result.x, (144, 12))], (12, 12))
     # create list of nodes
-    parent = None
     start_board = copy.deepcopy(problem.initial)
+    parent = Node(problem.initial)
     start_board_ones = np.where(start_board > 0, 0, 1)
     board_with_filled_in_values = np.multiply(start_board_ones, output)
     cur_board = Node(output)
