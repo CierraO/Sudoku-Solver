@@ -7,6 +7,7 @@ import requests
 
 from sudoku_puzzle import SudokuPuzzle
 from ui_elements import Button, OptionBox, TextComment, TextField
+from utils import resource_path
 
 pygame.font.init()
 
@@ -23,12 +24,12 @@ win = pygame.display.set_mode((WIDTH, WIDTH))
 win.fill(background_color)
 
 # load all button images
-gen_button_img = pygame.image.load('resources/button_generate_updated.png').convert_alpha()
-sol_Button_img = pygame.image.load('resources/button_solve_updated.png').convert_alpha()
-stp_Button_img = pygame.image.load('resources/button_step.png').convert_alpha()
-sug_Button_img = pygame.image.load('resources/suggestion_button.png').convert_alpha()
-ac_Button_img = pygame.image.load('resources/button_clear-all.png').convert_alpha()
-x_Button_img = pygame.image.load('resources/button_x.png').convert_alpha()
+gen_button_img = pygame.image.load(resource_path('resources/button_generate_updated.png')).convert_alpha()
+sol_Button_img = pygame.image.load(resource_path('resources/button_solve_updated.png')).convert_alpha()
+stp_Button_img = pygame.image.load(resource_path('resources/button_step.png')).convert_alpha()
+sug_Button_img = pygame.image.load(resource_path('resources/suggestion_button.png')).convert_alpha()
+ac_Button_img = pygame.image.load(resource_path('resources/button_clear-all.png')).convert_alpha()
+x_Button_img = pygame.image.load(resource_path('resources/button_x.png')).convert_alpha()
 
 # create button instances
 gen_button = Button(100, 770, gen_button_img, 1)

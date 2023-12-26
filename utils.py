@@ -11,7 +11,10 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 import functools
 import heapq
+import os
 import random
+import sys
+
 import numpy as np
 
 
@@ -65,6 +68,17 @@ def shuffled(iterable):
     items = list(iterable)
     random.shuffle(items)
     return items
+
+
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
 
 
 class PriorityQueue:
