@@ -1,6 +1,6 @@
 # The Sudoku Solver
 An application for solving NxN Sudoku puzzles using various algorithms
-<p align="center"><img align="center" src="https://imgur.com/EIJPCpx" alt="Program Demo" width="500"/></p>
+<p align="center"><img align="center" src="./__screenshots/showcase.gif" alt="Program Demo" width="500"/></p>
 
 ## Features
 * **Generate puzzles:** generate 9x9, 6x6, and 12x12 Sudoku puzzles
